@@ -316,7 +316,7 @@
         .bg-local { background: #0077ff; }    /* 各駅停車 */
 
         /* -----------------------------------------------------------------
-           ELESITE TATE-LINE DIAGRAM (駅間連続ピンクシャフト完全再現)
+           ELESITE TATE-LINE DIAGRAM (駅間連続ピンクシャフト＆スクロール対応)
            ----------------------------------------------------------------- */
         .elesite-full-wrapper {
             background-color: var(--elesite-bg);
@@ -325,7 +325,10 @@
             padding: 20px 10px;
             position: relative;
             box-shadow: inset 0 0 20px rgba(0,0,0,0.1);
+            max-height: 75vh;
+            overflow-y: auto;
             overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
         }
 
         /* 中央をまっすぐつらぬく太いマゼンタ線 */
@@ -540,7 +543,7 @@
             max-width: 550px;
         }
 
-        /* TABLES */
+        /* TABLES & TRAIN STATUS */
         .train-table {
             width: 100%;
             border-collapse: collapse;
@@ -758,7 +761,7 @@
                 <div class="control-bar">
                     <label>表示路線:</label>
                     <select id="map-line-filter" onchange="renderLiveMap()">
-                        <option value="HOSHIZORA">星空本線 (笹塚・明大前・下高井戸区間風)</option>
+                        <option value="HOSHIZORA">星空本線 (新宿〜桜上水区間)</option>
                         <option value="LUNA">ルナサークル線</option>
                         <option value="GALAXY">銀河スカイライン</option>
                     </select>
@@ -813,6 +816,7 @@
                             <th>種別</th>
                             <th>行き先</th>
                             <th>両数</th>
+                            <th>編成番号</th>
                             <th>状態</th>
                             <th>操作</th>
                         </tr>
@@ -822,7 +826,7 @@
             </div>
         </section>
 
-        <!-- 5. ADD TRAIN TAB (フル機能復元版) -->
+        <!-- 5. ADD TRAIN TAB -->
         <section id="tab-addtrain" class="tab-content">
             <div class="card">
                 <div class="card-header">
@@ -868,8 +872,8 @@
                             <input type="number" id="add-cars" value="8" min="1" max="12">
                         </div>
                         <div class="form-group">
-                            <label>車両形式</label>
-                            <input type="text" id="add-series" value="7000系">
+                            <label>編成番号</label>
+                            <input type="text" id="add-formation" value="7001F" placeholder="例: 7001F">
                         </div>
                     </div>
 
@@ -908,11 +912,11 @@
                         <div id="section-couple-fmt" style="display:none; margin-top: 12px;" class="form-grid">
                             <div class="form-group">
                                 <label>前編成 (1〜4号車)</label>
-                                <input type="text" id="fmt-front" value="7000系 4両">
+                                <input type="text" id="fmt-front" value="7001F 4両">
                             </div>
                             <div class="form-group">
                                 <label>後編成 (5〜8号車)</label>
-                                <input type="text" id="fmt-rear" value="8000系 4両">
+                                <input type="text" id="fmt-rear" value="8002F 4両">
                             </div>
                         </div>
                     </div>
@@ -969,7 +973,7 @@
             </div>
         </section>
 
-        <!-- 8. SETTINGS TAB (フル機能復元版) -->
+        <!-- 8. SETTINGS TAB -->
         <section id="tab-settings" class="tab-content">
             <div class="card">
                 <div class="card-header"><div class="card-title">システム環境設定</div></div>
@@ -1049,13 +1053,13 @@
         };
 
         let trains = [
-            { id: "7724", op: "32", line: "HOSHIZORA", type: "特急", end: "新宿", cars: 8, dir: "INBOUND", currentPos: 0 },
-            { id: "9702", op: "17", line: "HOSHIZORA", type: "各停", end: "高尾山口", cars: 10, dir: "OUTBOUND", currentPos: 0 },
-            { id: "9734", op: "49", line: "HOSHIZORA", type: "特急", end: "新宿", cars: 8, dir: "INBOUND", currentPos: 1 },
-            { id: "7725", op: "48", line: "HOSHIZORA", type: "特急", end: "京王八王子", cars: 8, dir: "OUTBOUND", currentPos: 1 },
-            { id: "5736", op: "53K②", line: "HOSHIZORA", type: "Mt.Mt", end: "新宿", cars: 10, dir: "INBOUND", currentPos: 2.5 },
-            { id: "8703", op: "45", line: "HOSHIZORA", type: "各停", end: "新宿", cars: 8, dir: "INBOUND", currentPos: 3 },
-            { id: "9706", op: "89K", line: "HOSHIZORA", type: "各停", end: "京王八王子", cars: 10, dir: "OUTBOUND", currentPos: 3 }
+            { id: "7724", op: "32", line: "HOSHIZORA", type: "特急", end: "新宿", cars: 8, formation: "7001F", status: "定時", dir: "INBOUND", currentPos: 0 },
+            { id: "9702", op: "17", line: "HOSHIZORA", type: "各停", end: "高尾山口", cars: 10, formation: "9001F", status: "定時", dir: "OUTBOUND", currentPos: 0 },
+            { id: "9734", op: "49", line: "HOSHIZORA", type: "特急", end: "新宿", cars: 8, formation: "7002F", status: "定時", dir: "INBOUND", currentPos: 1 },
+            { id: "7725", op: "48", line: "HOSHIZORA", type: "特急", end: "京王八王子", cars: 8, formation: "7003F", status: "定時", dir: "OUTBOUND", currentPos: 1 },
+            { id: "5736", op: "53K②", line: "HOSHIZORA", type: "Mt.Mt", end: "新宿", cars: 10, formation: "5001F", status: "定時", dir: "INBOUND", currentPos: 2.5 },
+            { id: "8703", op: "45", line: "HOSHIZORA", type: "各停", end: "新宿", cars: 8, formation: "8001F", status: "遅延 2分", dir: "INBOUND", currentPos: 3 },
+            { id: "9706", op: "89K", line: "HOSHIZORA", type: "各停", end: "京王八王子", cars: 10, formation: "9002F", status: "定時", dir: "OUTBOUND", currentPos: 3 }
         ];
 
         let liveMapMode = "diagram";
@@ -1235,11 +1239,23 @@
                     <td><span class="badge-type bg-express">${t.type}</span></td>
                     <td>${t.end}</td>
                     <td>${t.cars}両</td>
-                    <td><span style="color:var(--accent-green);">● 定時</span></td>
-                    <td><button class="btn btn-outline btn-sm" onclick="showTrainDetailModalByTrain('${t.id}')">詳細</button></td>
+                    <td><span style="color:var(--accent-cyan); font-weight:bold;">${t.formation}</span></td>
+                    <td><span style="color:var(--accent-green);">● ${t.status}</span></td>
+                    <td>
+                        <button class="btn btn-outline btn-sm" onclick="showTrainDetailModalByTrain('${t.id}')">詳細</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteTrain('${t.id}')">削除</button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        function deleteTrain(id) {
+            if (confirm(`列車 ${id} を削除しますか？`)) {
+                trains = trains.filter(t => t.id !== id);
+                renderTrainStatus();
+                renderLiveMap();
+            }
         }
 
         /* ADD TRAIN CHECKBOX TOGGLES & HANDLER */
@@ -1282,11 +1298,13 @@
                 type: document.getElementById('add-type').value,
                 end: document.getElementById('add-end-station').value,
                 cars: parseInt(document.getElementById('add-cars').value),
+                formation: document.getElementById('add-formation').value || "7001F",
+                status: "定時",
                 dir: "INBOUND",
                 currentPos: 0
             };
             trains.push(newT);
-            alert(`列車 ${newT.id} を追加しました`);
+            alert(`列車 ${newT.id} (編成: ${newT.formation}) を追加しました`);
             switchTab('trainstatus');
             renderTrainStatus();
             renderLiveMap();
@@ -1313,6 +1331,8 @@
                 <p><strong>運用番号:</strong> ${t.op}</p>
                 <p><strong>種別・行先:</strong> ${t.type} ${t.end}行</p>
                 <p><strong>両数:</strong> ${t.cars}両編成</p>
+                <p><strong>編成番号:</strong> ${t.formation}</p>
+                <p><strong>状態:</strong> ${t.status}</p>
             `;
             document.getElementById('modal-overlay').style.display = 'flex';
         }
