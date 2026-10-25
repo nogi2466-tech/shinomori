@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>星空未来鉄道 (HFR) 運行・指令管理システム</title>
+    <title>星空未来鉄道 総合指令システム</title>
     <!-- Leaflet CSS for Map mode -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <style>
@@ -98,12 +98,6 @@
             background: linear-gradient(90deg, #ffffff, var(--accent-cyan));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-        }
-
-        .brand-sub {
-            font-size: 0.65rem;
-            color: var(--accent-gold);
-            letter-spacing: 1.5px;
         }
 
         .header-status {
@@ -363,14 +357,15 @@
         .elesite-station-band {
             background-color: var(--elesite-band);
             height: 40px;
-            border-radius: 4px;
+            border-radius: 6px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 0 12px;
+            justify-content: flex-between;
+            padding: 0 8px 0 14px;
             position: relative;
             z-index: 2;
             box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            width: 100%;
         }
 
         .elesite-station-name {
@@ -388,19 +383,19 @@
             border-radius: 12px;
             font-size: 0.68rem;
             font-weight: bold;
+            margin-left: auto;
+            margin-right: 6px;
         }
 
         .elesite-node-circle {
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             background-color: #ffffff;
-            border: 5px solid var(--elesite-line);
+            border: 4px solid var(--elesite-line);
             border-radius: 50%;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
             z-index: 3;
             box-shadow: 0 0 4px rgba(0,0,0,0.2);
+            flex-shrink: 0;
         }
 
         /* 駅間行 */
@@ -561,37 +556,46 @@
             color: var(--text-muted);
         }
 
-        /* PAPER TIMETABLE */
+        /* PAPER TIMETABLE (HIGH CONTRAST DARK MODE) */
         .paper-timetable-container {
             overflow-x: auto;
-            background: #0f172a;
+            background: #0b1120;
             border: 1px solid var(--border-color);
             border-radius: 8px;
             max-height: 600px;
         }
         .paper-table {
             border-collapse: collapse;
-            font-size: 0.78rem;
+            font-size: 0.85rem;
             width: 100%;
             white-space: nowrap;
+            color: #ffffff;
         }
         .paper-table th, .paper-table td {
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 6px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
             text-align: center;
+            background-color: #121b2d;
+            color: #ffffff;
         }
         .paper-table th.station-col, .paper-table td.station-col {
             position: sticky;
             left: 0;
-            background: #182238;
+            background: #1e293b;
             z-index: 10;
             text-align: left;
             font-weight: bold;
             color: var(--accent-gold);
             min-width: 120px;
+            border-right: 2px solid var(--accent-cyan);
+        }
+        .paper-table td {
+            font-family: monospace;
+            font-weight: 600;
+            color: #f1f5f9;
         }
 
-        /* FORM GRID */
+        /* FORM GRID & CHECKBOX PANELS */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -606,6 +610,23 @@
             font-size: 0.75rem;
             color: var(--text-muted);
             font-weight: bold;
+        }
+
+        .checkbox-panel {
+            background: rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 12px;
+        }
+        .checkbox-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
         }
 
         /* MODAL */
@@ -658,7 +679,6 @@
             <div class="logo-icon">HFR</div>
             <div>
                 <div class="brand-title">星空未来鉄道 総合指令</div>
-                <div class="brand-sub">HOSHIZORA FUTURE RAILWAY v5.3</div>
             </div>
         </div>
 
@@ -690,11 +710,11 @@
         <section id="tab-company" class="tab-content active">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">星空未来鉄道 (HFR) 会社概要</div>
+                    <div class="card-title">星空未来鉄道 会社概要</div>
                     <span class="badge-type bg-express">創立 2050年</span>
                 </div>
                 <p style="line-height: 1.6; font-size: 0.9rem; margin-bottom: 12px;">
-                    星空未来鉄道 (HOSHIZORA FUTURE RAILWAY) は、都心「中央未来」から宇宙港プラザ、天空新都心、ルナシティを結ぶ超電導リニアおよびAI自律駆動軌道ネットワークです。
+                    星空未来鉄道は、都心「中央未来」から宇宙港プラザ、天空新都心、ルナシティを結ぶ超電導リニアおよびAI自律駆動軌道ネットワークです。
                 </p>
             </div>
         </section>
@@ -802,13 +822,13 @@
             </div>
         </section>
 
-        <!-- 5. ADD TRAIN TAB -->
+        <!-- 5. ADD TRAIN TAB (フル機能復元版) -->
         <section id="tab-addtrain" class="tab-content">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">新規列車追加</div>
+                    <div class="card-title">新規列車・ダイヤ編成追加</div>
                 </div>
-                <form onsubmit="handleAddTrain(event)">
+                <form id="add-train-form" onsubmit="handleAddTrain(event)">
                     <div class="form-grid">
                         <div class="form-group">
                             <label>列車番号 *</label>
@@ -823,22 +843,110 @@
                             <select id="add-line">
                                 <option value="HOSHIZORA">星空本線</option>
                                 <option value="LUNA">ルナサークル線</option>
+                                <option value="GALAXY">銀河スカイライン</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label>種別</label>
                             <select id="add-type">
                                 <option value="特急">特急</option>
-                                <option value="各駅停車">各駅停車</option>
+                                <option value="各停">各停</option>
                                 <option value="区間急行">区間急行</option>
+                                <option value="急行">急行</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>行き先</label>
-                            <input type="text" id="add-end" value="新宿">
+                            <label>始点駅</label>
+                            <select id="add-start-station"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>終点駅 (行き先)</label>
+                            <select id="add-end-station"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>両数</label>
+                            <input type="number" id="add-cars" value="8" min="1" max="12">
+                        </div>
+                        <div class="form-group">
+                            <label>車両形式</label>
+                            <input type="text" id="add-series" value="7000系">
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary" style="margin-top: 15px; width: 100%; justify-content: center;">➕ ダイヤへ新規追加</button>
+
+                    <!-- CHECKBOX OPTION 1: TYPE CHANGE -->
+                    <div class="checkbox-panel">
+                        <label class="checkbox-header">
+                            <input type="checkbox" id="chk-type-change" onchange="toggleTypeChangeSection()">
+                            🔀 途中駅での種別変更設定
+                        </label>
+                        <div id="section-type-change" style="display:none; margin-top: 12px;" class="form-grid">
+                            <div class="form-group">
+                                <label>変更駅</label>
+                                <select id="tc-station"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>変更後の種別</label>
+                                <select id="tc-new-type">
+                                    <option value="各停">各停</option>
+                                    <option value="急速">急速</option>
+                                    <option value="特急">特急</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>変更後の列車番号</label>
+                                <input type="text" id="tc-new-id" placeholder="例: 9724">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CHECKBOX OPTION 2: COUPLED FORMATIONS -->
+                    <div class="checkbox-panel">
+                        <label class="checkbox-header">
+                            <input type="checkbox" id="chk-couple-fmt" onchange="toggleCoupleFmtSection()">
+                            🚃 連結2編成設定 (前編成 + 後編成)
+                        </label>
+                        <div id="section-couple-fmt" style="display:none; margin-top: 12px;" class="form-grid">
+                            <div class="form-group">
+                                <label>前編成 (1〜4号車)</label>
+                                <input type="text" id="fmt-front" value="7000系 4両">
+                            </div>
+                            <div class="form-group">
+                                <label>後編成 (5〜8号車)</label>
+                                <input type="text" id="fmt-rear" value="8000系 4両">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CHECKBOX OPTION 3: COUPLING / DECOUPLING WORK -->
+                    <div class="checkbox-panel">
+                        <label class="checkbox-header">
+                            <input type="checkbox" id="chk-work" onchange="toggleWorkSection()">
+                            🛠️ 連結・解結作業時間設定
+                        </label>
+                        <div id="section-work" style="display:none; margin-top: 12px;" class="form-grid">
+                            <div class="form-group">
+                                <label>作業実施駅</label>
+                                <select id="work-station"></select>
+                            </div>
+                            <div class="form-group">
+                                <label>作業種別</label>
+                                <select id="work-type">
+                                    <option value="ATTACH">連結作業</option>
+                                    <option value="DETACH">解結(切り離し)作業</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>前編成 到着/発車時間設定</label>
+                                <input type="text" placeholder="例: 10:15着 / 10:20発">
+                            </div>
+                            <div class="form-group">
+                                <label>後編成 到着/発車時間設定</label>
+                                <input type="text" placeholder="例: 10:17着 / 10:20発">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="margin-top: 16px; width: 100%; justify-content: center;">➕ ダイヤデータへ新規列車を追加登録</button>
                 </form>
             </div>
         </section>
@@ -847,7 +955,7 @@
         <section id="tab-fleet" class="tab-content">
             <div class="card">
                 <div class="card-header"><div class="card-title">編成表</div></div>
-                <p style="font-size: 0.85rem; color: var(--text-muted);">H1000系 (4両) / L2000系 (6両) / G7000系 (8両) 運用中</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">7000系 (8両) / 8000系 (10両) / 9000系 (10両) 運用中</p>
             </div>
         </section>
 
@@ -861,16 +969,46 @@
             </div>
         </section>
 
-        <!-- 8. SETTINGS TAB -->
+        <!-- 8. SETTINGS TAB (フル機能復元版) -->
         <section id="tab-settings" class="tab-content">
             <div class="card">
-                <div class="card-header"><div class="card-title">システム設定</div></div>
-                <div class="form-group" style="max-width: 400px;">
-                    <label>🔒 サイト全体の運行日固定</label>
-                    <select id="set-global-day" onchange="applySettings()">
-                        <option value="WEEKDAY">平日ダイヤに固定</option>
-                        <option value="WEEKEND">土休日ダイヤに固定</option>
-                    </select>
+                <div class="card-header"><div class="card-title">システム環境設定</div></div>
+                <div style="display: flex; flex-direction: column; gap: 16px; max-width: 500px;">
+                    <div class="form-group">
+                        <label>🔒 サイト全体の運行日固定設定</label>
+                        <select id="set-global-day" onchange="applySettings()">
+                            <option value="NONE">指定なし (各ページで切替可能)</option>
+                            <option value="WEEKDAY" selected>平日ダイヤに固定</option>
+                            <option value="WEEKEND">土休日ダイヤに固定</option>
+                            <option value="EVENT">特別イベントダイヤに固定</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>🔔 通知・アラート音設定</label>
+                        <select id="set-notify" onchange="applySettings()">
+                            <option value="ON">通知および効果音 ON</option>
+                            <option value="OFF">ミュート (通知OFF)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>⏱️ システムクロック倍速設定</label>
+                        <select id="set-clock-speed" onchange="applySettings()">
+                            <option value="1">1倍 (リアルタイム)</option>
+                            <option value="5">5倍速</option>
+                            <option value="10">10倍速</option>
+                            <option value="60">60倍速</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>🎨 システムテーマ</label>
+                        <select id="set-theme" onchange="applySettings()">
+                            <option value="dark">サイバーダークテーマ</option>
+                            <option value="light">ホログラフィックライトテーマ</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </section>
@@ -929,6 +1067,7 @@
             renderLiveMap();
             renderTrainStatus();
             renderPaperTimetable();
+            populateFormStationSelects();
         };
 
         function switchTab(tabId) {
@@ -1009,14 +1148,11 @@
                 band.innerHTML = `
                     <span class="elesite-station-name">${st}</span>
                     ${(st==='新宿'||st==='笹塚'||st==='明大前'||st==='下高井戸') ? '<span class="elesite-transfer-tag">乗換</span>' : ''}
+                    <div class="elesite-node-circle"></div>
                 `;
-
-                const node = document.createElement('div');
-                node.className = 'elesite-node-circle';
 
                 stRow.appendChild(inSide);
                 stRow.appendChild(band);
-                stRow.appendChild(node);
                 stRow.appendChild(outSide);
                 container.appendChild(stRow);
 
@@ -1106,6 +1242,37 @@
             });
         }
 
+        /* ADD TRAIN CHECKBOX TOGGLES & HANDLER */
+        function populateFormStationSelects() {
+            const allSt = [...new Set([...STATIONS.HOSHIZORA, ...STATIONS.LUNA, ...STATIONS.GALAXY])];
+            const selects = ['add-start-station', 'add-end-station', 'tc-station', 'work-station'];
+
+            selects.forEach(sId => {
+                const el = document.getElementById(sId);
+                if (!el) return;
+                el.innerHTML = '';
+                allSt.forEach(st => {
+                    const opt = document.createElement('option');
+                    opt.value = st;
+                    opt.innerText = st + '駅';
+                    el.appendChild(opt);
+                });
+            });
+        }
+
+        function toggleTypeChangeSection() {
+            const chk = document.getElementById('chk-type-change').checked;
+            document.getElementById('section-type-change').style.display = chk ? 'grid' : 'none';
+        }
+        function toggleCoupleFmtSection() {
+            const chk = document.getElementById('chk-couple-fmt').checked;
+            document.getElementById('section-couple-fmt').style.display = chk ? 'grid' : 'none';
+        }
+        function toggleWorkSection() {
+            const chk = document.getElementById('chk-work').checked;
+            document.getElementById('section-work').style.display = chk ? 'grid' : 'none';
+        }
+
         function handleAddTrain(e) {
             e.preventDefault();
             const newT = {
@@ -1113,8 +1280,8 @@
                 op: document.getElementById('add-op').value,
                 line: document.getElementById('add-line').value,
                 type: document.getElementById('add-type').value,
-                end: document.getElementById('add-end').value,
-                cars: 8,
+                end: document.getElementById('add-end-station').value,
+                cars: parseInt(document.getElementById('add-cars').value),
                 dir: "INBOUND",
                 currentPos: 0
             };
@@ -1130,7 +1297,7 @@
             const stations = STATIONS.HOSHIZORA;
             table.innerHTML = '';
 
-            let h1 = `<tr><th class="station-col">列車番号</th>` + trains.map(t => `<th>${t.id}</th>`).join('') + `</tr>`;
+            let h1 = `<tr><th class="station-col">列車番号</th>` + trains.map(t => `<th style="color:var(--accent-cyan); font-weight:bold;">${t.id}</th>`).join('') + `</tr>`;
             let h2 = `<tr><th class="station-col">種別</th>` + trains.map(t => `<th><span class="badge-type bg-express">${t.type}</span></th>`).join('') + `</tr>`;
             table.innerHTML += h1 + h2;
 
