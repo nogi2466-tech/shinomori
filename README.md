@@ -18,6 +18,7 @@
             --accent-purple: #9d00ff;
             --accent-green: #00ff88;
             --accent-red: #ff3366;
+            --accent-orange: #ff9900;
             --text-main: #e2e8f0;
             --text-muted: #64748b;
             --border-color: rgba(0, 240, 255, 0.2);
@@ -264,6 +265,18 @@
             box-shadow: 0 0 10px rgba(0,240,255,0.3);
         }
 
+        .btn-success {
+            background: linear-gradient(135deg, var(--accent-green), #00b359);
+            color: #000;
+            box-shadow: 0 0 10px rgba(0,255,136,0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--accent-orange), #e68a00);
+            color: #000;
+            box-shadow: 0 0 10px rgba(255,153,0,0.3);
+        }
+
         .btn-outline {
             background: transparent;
             border: 1px solid var(--border-color);
@@ -277,8 +290,8 @@
         }
 
         .btn-sm {
-            padding: 4px 8px;
-            font-size: 0.72rem;
+            padding: 5px 10px;
+            font-size: 0.75rem;
         }
 
         .control-bar {
@@ -287,10 +300,42 @@
             flex-wrap: wrap;
             align-items: center;
             margin-bottom: 16px;
-            background: rgba(0,0,0,0.2);
-            padding: 10px;
+            background: rgba(0,0,0,0.25);
+            padding: 12px;
             border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .bulk-control-panel {
+            background: rgba(0, 240, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 16px;
+        }
+
+        .bulk-control-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--accent-cyan);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .bulk-actions-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .input-inline-number {
+            width: 70px;
+            padding: 6px;
+            text-align: center;
+            font-weight: bold;
         }
 
         select, input[type="text"], input[type="number"], input[type="time"] {
@@ -310,13 +355,28 @@
             font-size: 0.7rem;
             font-weight: bold;
             color: #fff;
+            display: inline-block;
         }
         .bg-express { background: #e5007d; }  /* 超特急 / 特急 */
         .bg-liner { background: #9d00ff; }    /* 急行 / ライナー */
         .bg-local { background: #0077ff; }    /* 各駅停車 */
+        .bg-mountain { background: #00b359; } /* Mt.Mt */
+
+        .status-pill {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .status-normal { background: rgba(0, 255, 136, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+        .status-delay { background: rgba(255, 153, 0, 0.15); color: var(--accent-orange); border: 1px solid var(--accent-orange); }
+        .status-suspend { background: rgba(255, 51, 102, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
 
         /* -----------------------------------------------------------------
-           ELESITE TATE-LINE DIAGRAM (駅間連続ピンクシャフト＆スクロール対応)
+           ELESITE TATE-LINE DIAGRAM (駅間完全連続ライン構造)
            ----------------------------------------------------------------- */
         .elesite-full-wrapper {
             background-color: var(--elesite-bg);
@@ -331,8 +391,35 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* 中央をまっすぐつらぬく太いマゼンタ線 */
-        .elesite-continuous-line {
+        .elesite-row-block {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .elesite-row {
+            display: grid;
+            grid-template-columns: 1fr 200px 1fr;
+            width: 100%;
+            align-items: center;
+            position: relative;
+        }
+
+        .elesite-row-station {
+            min-height: 52px;
+        }
+
+        .elesite-center-col {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* 連続するピンクシャフト */
+        .elesite-shaft-segment {
             position: absolute;
             top: 0;
             bottom: 0;
@@ -343,27 +430,13 @@
             z-index: 1;
         }
 
-        .elesite-row {
-            display: grid;
-            grid-template-columns: 1fr 180px 1fr;
-            width: 100%;
-            align-items: center;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* 駅行 */
-        .elesite-row-station {
-            min-height: 56px;
-        }
-
         .elesite-station-band {
             background-color: var(--elesite-band);
             height: 40px;
             border-radius: 6px;
             display: flex;
             align-items: center;
-            justify-content: flex-between;
+            justify-content: space-between;
             padding: 0 8px 0 14px;
             position: relative;
             z-index: 2;
@@ -372,7 +445,7 @@
         }
 
         .elesite-station-name {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 800;
             letter-spacing: 2px;
             color: #1e293b;
@@ -382,9 +455,9 @@
             border: 1px solid #0077ff;
             color: #0077ff;
             background: #fff;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.68rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 0.65rem;
             font-weight: bold;
             margin-left: auto;
             margin-right: 6px;
@@ -401,9 +474,8 @@
             flex-shrink: 0;
         }
 
-        /* 駅間行 */
         .elesite-row-inter {
-            min-height: 80px;
+            min-height: 75px;
         }
 
         .elesite-side-container {
@@ -547,19 +619,20 @@
         .train-table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.8rem;
+            font-size: 0.82rem;
         }
         .train-table th, .train-table td {
-            padding: 10px;
+            padding: 12px 10px;
             text-align: left;
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
         }
         .train-table th {
             background: rgba(0,0,0,0.4);
             color: var(--text-muted);
+            font-weight: bold;
         }
 
-        /* PAPER TIMETABLE (HIGH CONTRAST DARK MODE) */
+        /* PAPER TIMETABLE (HIGH CONTRAST DARK THEME) */
         .paper-timetable-container {
             overflow-x: auto;
             background: #0b1120;
@@ -681,7 +754,7 @@
         <div class="brand-logo">
             <div class="logo-icon">HFR</div>
             <div>
-                <div class="brand-title">星空未来鉄道 総合指令</div>
+                <div class="brand-title">星空未来鉄道 総合指令システム</div>
             </div>
         </div>
 
@@ -717,7 +790,7 @@
                     <span class="badge-type bg-express">創立 2050年</span>
                 </div>
                 <p style="line-height: 1.6; font-size: 0.9rem; margin-bottom: 12px;">
-                    星空未来鉄道は、都心「中央未来」から宇宙港プラザ、天空新都心、ルナシティを結ぶ超電導リニアおよびAI自律駆動軌道ネットワークです。
+                    星空未来鉄道は、都心「新宿」から「桜上水・調布」方面、および宇宙港プラザ、ルナシティを結ぶ超電導リニア・高架AI自律駆動軌道ネットワークです。
                 </p>
             </div>
         </section>
@@ -731,7 +804,7 @@
                 <div class="control-bar">
                     <label>路線:</label>
                     <select id="tt-line-select" onchange="updateStationOptions()">
-                        <option value="HOSHIZORA">星空本線</option>
+                        <option value="HOSHIZORA">星空本線 (新宿〜調布)</option>
                         <option value="LUNA">ルナサークル線</option>
                         <option value="GALAXY">銀河スカイライン</option>
                     </select>
@@ -739,8 +812,8 @@
                     <select id="tt-station-select" onchange="renderStationTimetable()"></select>
                     <label>方向:</label>
                     <select id="tt-dir-select" onchange="renderStationTimetable()">
-                        <option value="OUTBOUND">下り (宇宙港方面)</option>
-                        <option value="INBOUND">上り (中央未来方面)</option>
+                        <option value="OUTBOUND">下り (調布・宇宙港方面)</option>
+                        <option value="INBOUND">上り (新宿・中央未来方面)</option>
                     </select>
                 </div>
                 <div id="timetable-hourly-grid"></div>
@@ -761,24 +834,22 @@
                 <div class="control-bar">
                     <label>表示路線:</label>
                     <select id="map-line-filter" onchange="renderLiveMap()">
-                        <option value="HOSHIZORA">星空本線 (新宿〜桜上水区間)</option>
+                        <option value="HOSHIZORA">星空本線 (全駅表示)</option>
                         <option value="LUNA">ルナサークル線</option>
                         <option value="GALAXY">銀河スカイライン</option>
                     </select>
                 </div>
 
-                <!-- VIEW 1: ELESITE TATE-LINE DIAGRAM (連なるマゼンタ幹ライン) -->
+                <!-- VIEW 1: ELESITE TATE-LINE DIAGRAM (駅間連続ライン完全結合) -->
                 <div id="livemap-diagram-view">
                     <div style="display: flex; justify-content: space-between; max-width: 600px; margin: 0 auto 10px auto; font-weight: bold; font-size: 0.85rem;">
-                        <span style="color: var(--accent-magenta);">← 上り (中央未来方面)</span>
-                        <span style="color: #0077ff;">下り (宇宙港方面) →</span>
+                        <span style="color: var(--accent-magenta);">← 上り (新宿方面)</span>
+                        <span style="color: #0077ff;">下り (調布方面) →</span>
                     </div>
 
                     <div class="elesite-full-wrapper" id="elesite-full-wrapper">
-                        <!-- まっすぐ下まで貫く1本の太いマゼンタ線 -->
-                        <div class="elesite-continuous-line"></div>
                         <div id="elesite-rows-container">
-                            <!-- Populated dynamically -->
+                            <!-- Populated dynamically with continuous line structure -->
                         </div>
                     </div>
                 </div>
@@ -802,15 +873,48 @@
             </div>
         </section>
 
-        <!-- 4. TRAIN STATUS TAB -->
+        <!-- 4. TRAIN STATUS TAB (UPDATED BULK CONTROL PANEL) -->
         <section id="tab-trainstatus" class="tab-content">
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">全運行列車ステータス</div>
+                    <span id="selected-count-badge" class="badge-type bg-local">全選択中</span>
                 </div>
+
+                <!-- TOP BULK OPERATION CONTROL PANEL -->
+                <div class="bulk-control-panel">
+                    <div class="bulk-control-title">
+                        ⚙️ 一括運行制御パネル (選択列車・全列車対象)
+                    </div>
+                    <div class="bulk-actions-wrapper">
+                        <button class="btn btn-success btn-sm" onclick="applyBulkStatus('NORMAL')">
+                            ✅ 「定時」に一括変更
+                        </button>
+                        
+                        <div style="display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 6px;">
+                            <button class="btn btn-warning btn-sm" onclick="applyBulkStatus('DELAY')">
+                                ⚠️ 「一括遅延」設定
+                            </button>
+                            <input type="number" id="bulk-delay-min" value="5" min="1" max="120" class="input-inline-number">
+                            <span style="font-size: 0.75rem;">分</span>
+                        </div>
+
+                        <button class="btn btn-danger btn-sm" onclick="applyBulkStatus('SUSPEND')">
+                            🛑 「一括運転見合わせ」
+                        </button>
+
+                        <button class="btn btn-primary btn-sm" onclick="applyBulkStatus('RESUME')">
+                            🔄 「一括運転再開」
+                        </button>
+                    </div>
+                </div>
+
                 <table class="train-table">
                     <thead>
                         <tr>
+                            <th style="width: 40px; text-align: center;">
+                                <input type="checkbox" id="chk-select-all" checked onchange="toggleSelectAllTrains(this.checked)">
+                            </th>
                             <th>列車番号</th>
                             <th>運用番号</th>
                             <th>種別</th>
@@ -818,7 +922,6 @@
                             <th>両数</th>
                             <th>編成番号</th>
                             <th>状態</th>
-                            <th>操作</th>
                         </tr>
                     </thead>
                     <tbody id="train-table-body"></tbody>
@@ -857,6 +960,7 @@
                                 <option value="各停">各停</option>
                                 <option value="区間急行">区間急行</option>
                                 <option value="急行">急行</option>
+                                <option value="Mt.Mt">Mt.Mt</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -959,7 +1063,7 @@
         <section id="tab-fleet" class="tab-content">
             <div class="card">
                 <div class="card-header"><div class="card-title">編成表</div></div>
-                <p style="font-size: 0.85rem; color: var(--text-muted);">7000系 (8両) / 8000系 (10両) / 9000系 (10両) 運用中</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">5000系 (10両) / 7000系 (8両) / 8000系 (8・10両) / 9000系 (10両) 運用中</p>
             </div>
         </section>
 
@@ -1019,7 +1123,7 @@
 
     </main>
 
-    <!-- EDIT MODAL -->
+    <!-- EDIT / DETAIL MODAL -->
     <div id="modal-overlay" class="modal-overlay">
         <div class="modal-body">
             <h3 id="modal-title" style="color: var(--accent-cyan); margin-bottom: 12px;">列車詳細情報</h3>
@@ -1038,7 +1142,10 @@
            APP STATE & DATA
            ----------------------------------------------------------------- */
         const STATIONS = {
-            HOSHIZORA: ["新宿", "笹塚", "代田橋", "明大前", "下高井戸", "桜上水"],
+            HOSHIZORA: [
+                "新宿", "笹塚", "代田橋", "明大前", "下高井戸", "桜上水", 
+                "上北沢", "八幡山", "芦花公園", "千歳烏山", "仙川", "つつじヶ丘", "柴崎", "国領", "布田", "調布"
+            ],
             LUNA: ["月見台", "ルナシティ北", "星ケ丘東", "未来ドーム"],
             GALAXY: ["中央未来", "星ケ丘GT", "天空新都心", "宇宙港プラザ"]
         };
@@ -1049,17 +1156,18 @@
             "代田橋": [35.6711, 139.6583],
             "明大前": [35.6684, 139.6506],
             "下高井戸": [35.6661, 139.6418],
-            "桜上水": [35.6673, 139.6315]
+            "桜上水": [35.6673, 139.6315],
+            "調布": [35.6518, 139.5446]
         };
 
         let trains = [
-            { id: "7724", op: "32", line: "HOSHIZORA", type: "特急", end: "新宿", cars: 8, formation: "7001F", status: "定時", dir: "INBOUND", currentPos: 0 },
-            { id: "9702", op: "17", line: "HOSHIZORA", type: "各停", end: "高尾山口", cars: 10, formation: "9001F", status: "定時", dir: "OUTBOUND", currentPos: 0 },
-            { id: "9734", op: "49", line: "HOSHIZORA", type: "特急", end: "新宿", cars: 8, formation: "7002F", status: "定時", dir: "INBOUND", currentPos: 1 },
-            { id: "7725", op: "48", line: "HOSHIZORA", type: "特急", end: "京王八王子", cars: 8, formation: "7003F", status: "定時", dir: "OUTBOUND", currentPos: 1 },
-            { id: "5736", op: "53K②", line: "HOSHIZORA", type: "Mt.Mt", end: "新宿", cars: 10, formation: "5001F", status: "定時", dir: "INBOUND", currentPos: 2.5 },
-            { id: "8703", op: "45", line: "HOSHIZORA", type: "各停", end: "新宿", cars: 8, formation: "8001F", status: "遅延 2分", dir: "INBOUND", currentPos: 3 },
-            { id: "9706", op: "89K", line: "HOSHIZORA", type: "各停", end: "京王八王子", cars: 10, formation: "9002F", status: "定時", dir: "OUTBOUND", currentPos: 3 }
+            { id: "7724", op: "32", line: "HOSHIZORA", type: "特急", end: "新宿", cars: 8, formation: "7001F", status: "定時", dir: "INBOUND", currentPos: 0, selected: true },
+            { id: "9702", op: "17", line: "HOSHIZORA", type: "各停", end: "調布", cars: 10, formation: "9001F", status: "定時", dir: "OUTBOUND", currentPos: 0, selected: true },
+            { id: "9734", op: "49", line: "HOSHIZORA", type: "特急", end: "新宿", cars: 8, formation: "7002F", status: "定時", dir: "INBOUND", currentPos: 1, selected: true },
+            { id: "7725", op: "48", line: "HOSHIZORA", type: "特急", end: "調布", cars: 8, formation: "7003F", status: "定時", dir: "OUTBOUND", currentPos: 1, selected: true },
+            { id: "5736", op: "53K②", line: "HOSHIZORA", type: "Mt.Mt", end: "新宿", cars: 10, formation: "5001F", status: "定時", dir: "INBOUND", currentPos: 2.5, selected: true },
+            { id: "8703", op: "45", line: "HOSHIZORA", type: "各停", end: "新宿", cars: 8, formation: "8001F", status: "遅延 2分", dir: "INBOUND", currentPos: 3, selected: true },
+            { id: "9706", op: "89K", line: "HOSHIZORA", type: "各停", end: "調布", cars: 10, formation: "9002F", status: "定時", dir: "OUTBOUND", currentPos: 3, selected: true }
         ];
 
         let liveMapMode = "diagram";
@@ -1114,7 +1222,7 @@
         }
 
         /* -----------------------------------------------------------------
-           ELESITE LINE DIAGRAM RENDER (駅間連続ライン完全描画)
+           ELESITE LINE DIAGRAM RENDER (完全連続ピンクシャフト構造)
            ----------------------------------------------------------------- */
         function switchLiveMapMode(mode) {
             liveMapMode = mode;
@@ -1131,7 +1239,10 @@
             container.innerHTML = '';
 
             stations.forEach((st, idx) => {
-                // STATION ROW
+                const block = document.createElement('div');
+                block.className = 'elesite-row-block';
+
+                // 1. STATION ROW
                 const stRow = document.createElement('div');
                 stRow.className = 'elesite-row elesite-row-station';
 
@@ -1140,27 +1251,35 @@
                 const outSide = document.createElement('div');
                 outSide.className = 'elesite-side-container outbound';
 
-                // Render trains stopped at station
                 trains.filter(t => t.line === line && Math.floor(t.currentPos) === idx).forEach(t => {
                     const el = createElesiteTrainUnit(t);
                     if (t.dir === 'INBOUND') inSide.appendChild(el);
                     else outSide.appendChild(el);
                 });
 
+                const centerCol = document.createElement('div');
+                centerCol.className = 'elesite-center-col';
+
+                const shaft = document.createElement('div');
+                shaft.className = 'elesite-shaft-segment';
+
                 const band = document.createElement('div');
                 band.className = 'elesite-station-band';
                 band.innerHTML = `
                     <span class="elesite-station-name">${st}</span>
-                    ${(st==='新宿'||st==='笹塚'||st==='明大前'||st==='下高井戸') ? '<span class="elesite-transfer-tag">乗換</span>' : ''}
+                    ${(st==='新宿'||st==='笹塚'||st==='明大前'||st==='下高井戸'||st==='調布') ? '<span class="elesite-transfer-tag">乗換</span>' : ''}
                     <div class="elesite-node-circle"></div>
                 `;
 
-                stRow.appendChild(inSide);
-                stRow.appendChild(band);
-                stRow.appendChild(outSide);
-                container.appendChild(stRow);
+                centerCol.appendChild(shaft);
+                centerCol.appendChild(band);
 
-                // INTER-STATION ROW
+                stRow.appendChild(inSide);
+                stRow.appendChild(centerCol);
+                stRow.appendChild(outSide);
+                block.appendChild(stRow);
+
+                // 2. INTER-STATION ROW
                 if (idx < stations.length - 1) {
                     const interRow = document.createElement('div');
                     interRow.className = 'elesite-row elesite-row-inter';
@@ -1176,11 +1295,19 @@
                         else outInter.appendChild(el);
                     });
 
+                    const centerInterCol = document.createElement('div');
+                    centerInterCol.className = 'elesite-center-col';
+                    const interShaft = document.createElement('div');
+                    interShaft.className = 'elesite-shaft-segment';
+                    centerInterCol.appendChild(interShaft);
+
                     interRow.appendChild(inInter);
-                    interRow.appendChild(document.createElement('div')); // Empty middle for continuous line
+                    interRow.appendChild(centerInterCol);
                     interRow.appendChild(outInter);
-                    container.appendChild(interRow);
+                    block.appendChild(interRow);
                 }
+
+                container.appendChild(block);
             });
         }
 
@@ -1227,35 +1354,97 @@
         function mapZoomOut() { if (leafletMap) leafletMap.zoomOut(); }
         function resetMapView() { if (leafletMap) leafletMap.setView([35.6711, 139.6583], 13); }
 
-        /* TRAIN STATUS TABLE */
+        /* TRAIN STATUS TABLE & BULK OPERATIONS */
         function renderTrainStatus() {
             const tbody = document.getElementById('train-table-body');
             tbody.innerHTML = '';
-            trains.forEach(t => {
+
+            let selectedCount = 0;
+
+            trains.forEach((t, idx) => {
+                if (t.selected) selectedCount++;
+
+                let statusBadge = '';
+                if (t.status === '定時') {
+                    statusBadge = `<span class="status-pill status-normal">● 定時</span>`;
+                } else if (t.status.includes('遅延')) {
+                    statusBadge = `<span class="status-pill status-delay">⚠️ ${t.status}</span>`;
+                } else if (t.status === '見合わせ') {
+                    statusBadge = `<span class="status-pill status-suspend">🛑 運転見合わせ</span>`;
+                } else {
+                    statusBadge = `<span class="status-pill status-normal">● ${t.status}</span>`;
+                }
+
+                let typeBadgeClass = 'bg-express';
+                if (t.type === '各停') typeBadgeClass = 'bg-local';
+                else if (t.type === '急行' || t.type === '区間急行') typeBadgeClass = 'bg-liner';
+                else if (t.type === 'Mt.Mt') typeBadgeClass = 'bg-mountain';
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                    <td style="font-weight:bold; color:var(--accent-cyan);">${t.id}</td>
+                    <td style="text-align: center;">
+                        <input type="checkbox" ${t.selected ? 'checked' : ''} onchange="toggleTrainSelect(${idx}, this.checked)">
+                    </td>
+                    <td style="font-weight:bold; color:var(--accent-cyan); cursor:pointer;" onclick="showTrainDetailModalByTrain('${t.id}')">${t.id}</td>
                     <td><span style="color:var(--accent-gold); font-weight:bold;">${t.op}</span></td>
-                    <td><span class="badge-type bg-express">${t.type}</span></td>
+                    <td><span class="badge-type ${typeBadgeClass}">${t.type}</span></td>
                     <td>${t.end}</td>
                     <td>${t.cars}両</td>
                     <td><span style="color:var(--accent-cyan); font-weight:bold;">${t.formation}</span></td>
-                    <td><span style="color:var(--accent-green);">● ${t.status}</span></td>
-                    <td>
-                        <button class="btn btn-outline btn-sm" onclick="showTrainDetailModalByTrain('${t.id}')">詳細</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteTrain('${t.id}')">削除</button>
-                    </td>
+                    <td>${statusBadge}</td>
                 `;
                 tbody.appendChild(tr);
             });
+
+            // Update badges & select all checkbox state
+            const badge = document.getElementById('selected-count-badge');
+            if (selectedCount === trains.length) {
+                badge.innerText = `全選択中 (${selectedCount}編成)`;
+                badge.className = 'badge-type bg-local';
+            } else if (selectedCount === 0) {
+                badge.innerText = `選択なし`;
+                badge.className = 'badge-type bg-liner';
+            } else {
+                badge.innerText = `${selectedCount} / ${trains.length} 編成選択`;
+                badge.className = 'badge-type bg-express';
+            }
+
+            document.getElementById('chk-select-all').checked = (selectedCount === trains.length && trains.length > 0);
         }
 
-        function deleteTrain(id) {
-            if (confirm(`列車 ${id} を削除しますか？`)) {
-                trains = trains.filter(t => t.id !== id);
-                renderTrainStatus();
-                renderLiveMap();
+        function toggleSelectAllTrains(checked) {
+            trains.forEach(t => t.selected = checked);
+            renderTrainStatus();
+        }
+
+        function toggleTrainSelect(index, checked) {
+            trains[index].selected = checked;
+            renderTrainStatus();
+        }
+
+        function applyBulkStatus(actionType) {
+            const selectedTrains = trains.filter(t => t.selected);
+            if (selectedTrains.length === 0) {
+                alert('対象の列車が選択されていません。チェックボックスを選択してください。');
+                return;
             }
+
+            const delayMin = document.getElementById('bulk-delay-min').value || 5;
+
+            selectedTrains.forEach(t => {
+                if (actionType === 'NORMAL') {
+                    t.status = '定時';
+                } else if (actionType === 'DELAY') {
+                    t.status = `遅延 ${delayMin}分`;
+                } else if (actionType === 'SUSPEND') {
+                    t.status = '見合わせ';
+                } else if (actionType === 'RESUME') {
+                    t.status = '定時';
+                }
+            });
+
+            renderTrainStatus();
+            renderLiveMap();
         }
 
         /* ADD TRAIN CHECKBOX TOGGLES & HANDLER */
@@ -1301,7 +1490,8 @@
                 formation: document.getElementById('add-formation').value || "7001F",
                 status: "定時",
                 dir: "INBOUND",
-                currentPos: 0
+                currentPos: 0,
+                selected: true
             };
             trains.push(newT);
             alert(`列車 ${newT.id} (編成: ${newT.formation}) を追加しました`);
@@ -1328,11 +1518,11 @@
         function showTrainDetailModal(t) {
             document.getElementById('modal-title').innerText = `列車詳細 - ${t.id}`;
             document.getElementById('modal-content').innerHTML = `
-                <p><strong>運用番号:</strong> ${t.op}</p>
-                <p><strong>種別・行先:</strong> ${t.type} ${t.end}行</p>
-                <p><strong>両数:</strong> ${t.cars}両編成</p>
-                <p><strong>編成番号:</strong> ${t.formation}</p>
-                <p><strong>状態:</strong> ${t.status}</p>
+                <p style="margin-bottom:6px;"><strong>運用番号:</strong> ${t.op}</p>
+                <p style="margin-bottom:6px;"><strong>種別・行先:</strong> ${t.type} ${t.end}行</p>
+                <p style="margin-bottom:6px;"><strong>両数:</strong> ${t.cars}両編成</p>
+                <p style="margin-bottom:6px;"><strong>編成番号:</strong> ${t.formation}</p>
+                <p style="margin-bottom:6px;"><strong>運行状態:</strong> ${t.status}</p>
             `;
             document.getElementById('modal-overlay').style.display = 'flex';
         }
