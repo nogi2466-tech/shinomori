@@ -30,7 +30,15 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; transition: background-color 0.3s, color 0.3s; overflow-x: hidden; }
+        * { box-sizing: border-box; }
+        body { font-family: system-ui, -apple-system, sans-serif; transition: background-color 0.3s, color 0.3s; overflow-x: hidden; margin: 0; }
+        
+        .page-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
@@ -44,6 +52,7 @@
             overflow: hidden;
             display: flex;
             justify-content: center;
+            width: 100%;
         }
         .vertical-rail {
             position: absolute;
@@ -90,7 +99,6 @@
             z-index: 6;
             box-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
-        /* 列車配置スタイル（スマホ時は線に近づけてはみ出し防止） */
         .v-train {
             position: absolute;
             transform: translateY(-50%);
@@ -167,47 +175,51 @@
 
     <!-- ヘッダー -->
     <header class="bg-indigo-950 border-b border-indigo-800 p-3 sm:p-4 shadow-lg flex justify-between items-center gap-2 relative z-50">
-        <div class="flex items-center space-x-2 sm:space-x-3 cursor-pointer" onclick="switchTab('about')">
-            <span class="text-2xl sm:text-3xl">🚄</span>
-            <div>
-                <h1 class="text-base sm:text-xl font-bold tracking-wider text-indigo-200">紫句守鉄道 <span class="text-[10px] sm:text-xs font-normal text-indigo-400">しのもり鉄道</span></h1>
-                <p class="text-[10px] sm:text-xs text-slate-400">総合運行管理システム</p>
+        <div class="page-container flex justify-between items-center px-1">
+            <div class="flex items-center space-x-2 sm:space-x-3 cursor-pointer" onclick="switchTab('about')">
+                <span class="text-2xl sm:text-3xl">🚄</span>
+                <div>
+                    <h1 class="text-base sm:text-xl font-bold tracking-wider text-indigo-200">紫句守鉄道 <span class="text-[10px] sm:text-xs font-normal text-indigo-400">しのもり鉄道</span></h1>
+                    <p class="text-[10px] sm:text-xs text-slate-400">総合運行管理システム</p>
+                </div>
             </div>
-        </div>
 
-        <div class="flex items-center gap-2">
-            <div id="live-datetime" class="hidden lg:block bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-mono text-indigo-300">
-                2026/10/27(火) 00:00:00
+            <div class="flex items-center gap-2">
+                <div id="live-datetime" class="hidden lg:block bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-mono text-indigo-300">
+                    2026/10/27(火) 00:00:00
+                </div>
+                <div id="event-banner-badge" class="hidden bg-rose-900 text-rose-200 px-2.5 py-1 rounded-lg text-xs font-bold border border-rose-700 animate-pulse">
+                    🎉 イベント日
+                </div>
+                <div class="hidden sm:flex items-center space-x-2 bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-700 text-[11px]">
+                    <span id="sync-status-dot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                    <span id="sync-status-text">同期待機中</span>
+                </div>
+                <button onclick="toggleMenu()" class="bg-indigo-900 hover:bg-indigo-800 border border-indigo-700 p-2 rounded-lg text-white md:hidden transition flex items-center justify-center w-9 h-9 shadow">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
             </div>
-            <div id="event-banner-badge" class="hidden bg-rose-900 text-rose-200 px-2.5 py-1 rounded-lg text-xs font-bold border border-rose-700 animate-pulse">
-                🎉 イベント日
-            </div>
-            <div class="hidden sm:flex items-center space-x-2 bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-700 text-[11px]">
-                <span id="sync-status-dot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                <span id="sync-status-text">同期待機中</span>
-            </div>
-            <button onclick="toggleMenu()" class="bg-indigo-900 hover:bg-indigo-800 border border-indigo-700 p-2 rounded-lg text-white md:hidden transition flex items-center justify-center w-9 h-9 shadow">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                </svg>
-            </button>
         </div>
     </header>
 
     <!-- ナビゲーションタブ -->
-    <nav id="nav-menu" class="hidden md:flex bg-slate-900/95 border-b border-slate-800 px-4 py-2 overflow-x-auto space-x-1 sticky top-0 z-40 backdrop-blur shadow-md">
-        <button onclick="switchTab('about')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition bg-indigo-600 text-white shadow whitespace-nowrap" data-tab="about">会社について</button>
-        <button onclick="switchTab('timetable')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="timetable">時刻表</button>
-        <button onclick="switchTab('operation')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="operation">走行位置</button>
-        <button onclick="switchTab('traininfo')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="traininfo">列車情報</button>
-        <button onclick="switchTab('addtrain')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="addtrain">列車追加</button>
-        <button onclick="switchTab('consist')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="consist">編成表</button>
-        <button onclick="switchTab('dia')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="dia">ダイヤ表</button>
-        <button onclick="switchTab('settings')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="settings">設定</button>
+    <nav class="bg-slate-900/95 border-b border-slate-800 px-4 py-2 sticky top-0 z-40 backdrop-blur shadow-md">
+        <div id="nav-menu" class="page-container hidden md:flex overflow-x-auto space-x-1">
+            <button onclick="switchTab('about')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition bg-indigo-600 text-white shadow whitespace-nowrap" data-tab="about">会社について</button>
+            <button onclick="switchTab('timetable')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="timetable">時刻表</button>
+            <button onclick="switchTab('operation')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="operation">走行位置</button>
+            <button onclick="switchTab('traininfo')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="traininfo">列車情報</button>
+            <button onclick="switchTab('addtrain')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="addtrain">列車追加</button>
+            <button onclick="switchTab('consist')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="consist">編成表</button>
+            <button onclick="switchTab('dia')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="dia">ダイヤ表</button>
+            <button onclick="switchTab('settings')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="settings">設定</button>
+        </div>
     </nav>
 
     <!-- メインコンテンツ -->
-    <main class="flex-1 p-3 sm:p-6 max-w-7xl mx-auto w-full relative z-10 box-border">
+    <main class="flex-1 p-3 sm:p-6 page-container w-full relative z-10">
 
         <!-- 1. 会社について -->
         <div id="tab-about" class="tab-content active space-y-6">
@@ -300,7 +312,7 @@
             </div>
 
             <div class="status-panel bg-slate-800 p-3 sm:p-4 rounded-xl border border-slate-700 flex justify-between items-center text-xs sm:text-sm">
-                <p class="text-slate-300 truncate"><strong>運行状態:</strong> <span id="statusText" class="text-indigo-300 font-bold">稼働中列車のみ表示</span></p>
+                <p class="text-slate-300 truncate"><strong>運行状態:</strong> <span id="statusText" class="text-indigo-300 font-bold">停車中・走行中を正確に反映</span></p>
                 <button onclick="renderOperationTrack()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded text-xs transition font-bold shrink-0">更新</button>
             </div>
         </div>
@@ -329,7 +341,7 @@
         <!-- 5. 列車追加 -->
         <div id="tab-addtrain" class="tab-content space-y-4">
             <h2 id="addtrain-form-title" class="text-lg sm:text-xl font-bold text-indigo-200">列車追加</h2>
-            <div class="bg-slate-800 p-4 sm:p-6 rounded-xl border border-slate-700 max-w-4xl space-y-4 sm:space-y-5 mx-auto">
+            <div class="bg-slate-800 p-4 sm:p-6 rounded-xl border border-slate-700 w-full space-y-4 sm:space-y-5">
                 <input type="hidden" id="edit-target-id" value="">
 
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -412,7 +424,7 @@
         <!-- 8. 設定 -->
         <div id="tab-settings" class="tab-content space-y-4">
             <h2 class="text-lg sm:text-xl font-bold text-indigo-200">設定</h2>
-            <div class="bg-slate-800 p-5 sm:p-6 rounded-xl border border-slate-700 max-w-xl space-y-5 mx-auto">
+            <div class="bg-slate-800 p-5 sm:p-6 rounded-xl border border-slate-700 w-full space-y-5">
                 <div class="space-y-3">
                     <h3 class="text-sm font-bold text-indigo-300 border-b border-slate-700 pb-1">運行日固定設定</h3>
                     <select id="setting-fixed-day" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs sm:text-sm text-white">
@@ -627,9 +639,11 @@
             container.innerHTML = html + `</div>`;
         }
 
+        /* 停車中・走行中を正確に判定するロジック */
         function getTrainStatus(t) {
             if(!t.schedule || t.schedule.length < 2) return "運行前";
             const schedSec = t.schedule.map(s => ({
+                stId: s.stId,
                 arr: parseTimeToSec(s.arr),
                 dep: parseTimeToSec(s.dep)
             })).filter(s => s.arr !== null || s.dep !== null);
@@ -638,19 +652,22 @@
             const now = new Date();
             const nowSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds() + (now.getMilliseconds() / 1000);
             
-            const firstDep = schedSec[0].dep || schedSec[0].arr;
-            const lastArr = schedSec[schedSec.length - 1].arr || schedSec[schedSec.length - 1].dep;
+            const firstDep = schedSec[0].dep !== null ? schedSec[0].dep : schedSec[0].arr;
+            const lastArr = schedSec[schedSec.length - 1].arr !== null ? schedSec[schedSec.length - 1].arr : schedSec[schedSec.length - 1].dep;
 
             if(nowSec < firstDep) return "運行前";
             if(nowSec > lastArr + 30) return "運行終了";
 
-            for(let i = 0; i < schedSec.length - 1; i++) {
+            for(let i = 0; i < schedSec.length; i++) {
                 const cur = schedSec[i];
-                const next = schedSec[i+1];
-                if(nowSec >= cur.arr && nowSec <= cur.dep) return "停車中";
-                if(nowSec > cur.dep && nowSec < next.arr) return "走行中";
+                const arrTime = cur.arr !== null ? cur.arr : cur.dep;
+                const depTime = cur.dep !== null ? cur.dep : cur.arr;
+                // 到着時刻から出発時刻までの間は「停車中」
+                if(arrTime !== null && depTime !== null && nowSec >= arrTime && nowSec <= depTime) {
+                    return "停車中";
+                }
             }
-            return "停車中";
+            return "走行中";
         }
 
         function renderOperationTrack() {
@@ -697,8 +714,8 @@
                 })).filter(s => s.arr !== null || s.dep !== null);
 
                 if(schedSec.length < 2) return;
-                const firstDep = schedSec[0].dep || schedSec[0].arr;
-                const lastArr = schedSec[schedSec.length - 1].arr || schedSec[schedSec.length - 1].dep;
+                const firstDep = schedSec[0].dep !== null ? schedSec[0].dep : schedSec[0].arr;
+                const lastArr = schedSec[schedSec.length - 1].arr !== null ? schedSec[schedSec.length - 1].arr : schedSec[schedSec.length - 1].dep;
 
                 if(nowSec < firstDep || nowSec > lastArr + 30) return;
 
@@ -709,14 +726,18 @@
                 for(let i = 0; i < schedSec.length - 1; i++) {
                     const cur = schedSec[i];
                     const next = schedSec[i+1];
-                    if(nowSec >= cur.arr && nowSec <= cur.dep) {
+                    const curDep = cur.dep !== null ? cur.dep : cur.arr;
+                    const nextArr = next.arr !== null ? next.arr : next.dep;
+                    const curArr = cur.arr !== null ? cur.arr : cur.dep;
+
+                    if(curArr !== null && curDep !== null && nowSec >= curArr && nowSec <= curDep) {
                         currentStationIdx = stations.findIndex(s => s.id === cur.stId);
                         break;
-                    } else if(nowSec > cur.dep && nowSec < next.arr) {
+                    } else if(curDep !== null && nextArr !== null && nowSec > curDep && nowSec < nextArr) {
                         const idxA = stations.findIndex(s => s.id === cur.stId);
                         const idxB = stations.findIndex(s => s.id === next.stId);
                         if(idxA !== -1 && idxB !== -1) {
-                            const prog = (nowSec - cur.dep) / (next.arr - cur.dep);
+                            const prog = (nowSec - curDep) / (nextArr - curDep);
                             currentPosRatio = idxA + (idxB - idxA) * prog;
                         }
                         break;
