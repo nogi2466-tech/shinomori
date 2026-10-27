@@ -30,7 +30,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; transition: background-color 0.3s, color 0.3s; }
+        body { font-family: system-ui, -apple-system, sans-serif; transition: background-color 0.3s, color 0.3s; overflow-x: hidden; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
@@ -39,7 +39,7 @@
             position: relative;
             min-height: 1400px;
             border-radius: 8px;
-            padding: 40px 20px;
+            padding: 40px 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             overflow: hidden;
             display: flex;
@@ -75,23 +75,22 @@
             transform: translateX(-50%);
             z-index: 2;
         }
-        /* 駅名を線の上に完全に重ねるスタイル */
         .v-station-label {
             position: absolute;
             left: 50%;
             transform: translateX(-50%) translateY(-50%);
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: bold;
-            padding: 2px 8px;
+            padding: 2px 6px;
             border-radius: 9999px;
-            background: rgba(15, 23, 42, 0.9);
+            background: rgba(15, 23, 42, 0.95);
             border: 1px solid #475569;
             color: #e2e8f0;
             white-space: nowrap;
             z-index: 6;
             box-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
-        /* 列車配置スタイル（左右分離） */
+        /* 列車配置スタイル（スマホ時は線に近づけてはみ出し防止） */
         .v-train {
             position: absolute;
             transform: translateY(-50%);
@@ -99,22 +98,22 @@
             z-index: 10;
         }
         .v-train.up-train {
-            right: calc(50% + 25px); /* 中央線の左側 */
+            right: calc(50% + 25px);
             text-align: right;
         }
         .v-train.down-train {
-            left: calc(50% + 25px); /* 中央線の右側 */
+            left: calc(50% + 25px);
             text-align: left;
         }
         .train-icon-v {
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: bold;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             margin: 0 auto;
@@ -122,13 +121,13 @@
         .train-card-v {
             color: white;
             border-radius: 6px;
-            padding: 6px 10px;
-            font-size: 11px;
+            padding: 4px 8px;
+            font-size: 10px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-            min-width: 110px;
+            min-width: 90px;
         }
         .train-num-label {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: bold;
             margin-bottom: 2px;
             white-space: nowrap;
@@ -140,22 +139,22 @@
             display: inline-flex;
             flex-direction: column;
             align-items: center;
-            margin-right: 12px;
-            margin-bottom: 8px;
+            margin-right: 10px;
+            margin-bottom: 6px;
             transition: transform 0.1s;
         }
         .tt-minute-item:hover {
             transform: scale(1.15);
         }
         .tt-dest-char {
-            font-size: 9px;
+            font-size: 8px;
             line-height: 1;
             margin-bottom: 1px;
             opacity: 0.85;
         }
         .tt-minute-num {
             font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1;
         }
 
@@ -167,28 +166,28 @@
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col relative dark">
 
     <!-- ヘッダー -->
-    <header class="bg-indigo-950 border-b border-indigo-800 p-4 shadow-lg flex justify-between items-center gap-4 relative z-50">
-        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('about')">
-            <span class="text-3xl">🚄</span>
+    <header class="bg-indigo-950 border-b border-indigo-800 p-3 sm:p-4 shadow-lg flex justify-between items-center gap-2 relative z-50">
+        <div class="flex items-center space-x-2 sm:space-x-3 cursor-pointer" onclick="switchTab('about')">
+            <span class="text-2xl sm:text-3xl">🚄</span>
             <div>
-                <h1 class="text-xl font-bold tracking-wider text-indigo-200">紫句守鉄道 <span class="text-xs font-normal text-indigo-400">しのもり鉄道</span></h1>
-                <p class="text-xs text-slate-400">総合運行管理システム</p>
+                <h1 class="text-base sm:text-xl font-bold tracking-wider text-indigo-200">紫句守鉄道 <span class="text-[10px] sm:text-xs font-normal text-indigo-400">しのもり鉄道</span></h1>
+                <p class="text-[10px] sm:text-xs text-slate-400">総合運行管理システム</p>
             </div>
         </div>
 
-        <div class="flex items-center gap-3">
-            <div id="live-datetime" class="hidden sm:block bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-mono text-indigo-300">
+        <div class="flex items-center gap-2">
+            <div id="live-datetime" class="hidden lg:block bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700 text-xs font-mono text-indigo-300">
                 2026/10/27(火) 00:00:00
             </div>
             <div id="event-banner-badge" class="hidden bg-rose-900 text-rose-200 px-2.5 py-1 rounded-lg text-xs font-bold border border-rose-700 animate-pulse">
-                🎉 イベント日ダイヤ
+                🎉 イベント日
             </div>
-            <div class="hidden md:flex items-center space-x-2 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-700 text-xs">
-                <span id="sync-status-dot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+            <div class="hidden sm:flex items-center space-x-2 bg-slate-900 px-2.5 py-1 rounded-lg border border-slate-700 text-[11px]">
+                <span id="sync-status-dot" class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
                 <span id="sync-status-text">同期待機中</span>
             </div>
-            <button onclick="toggleMenu()" class="bg-indigo-900 hover:bg-indigo-800 border border-indigo-700 p-2 rounded-lg text-white md:hidden transition flex items-center justify-center w-10 h-10 shadow">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button onclick="toggleMenu()" class="bg-indigo-900 hover:bg-indigo-800 border border-indigo-700 p-2 rounded-lg text-white md:hidden transition flex items-center justify-center w-9 h-9 shadow">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
@@ -197,43 +196,43 @@
 
     <!-- ナビゲーションタブ -->
     <nav id="nav-menu" class="hidden md:flex bg-slate-900/95 border-b border-slate-800 px-4 py-2 overflow-x-auto space-x-1 sticky top-0 z-40 backdrop-blur shadow-md">
-        <button onclick="switchTab('about')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition bg-indigo-600 text-white shadow" data-tab="about">会社について</button>
-        <button onclick="switchTab('timetable')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800" data-tab="timetable">時刻表</button>
-        <button onclick="switchTab('operation')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800" data-tab="operation">走行位置</button>
-        <button onclick="switchTab('traininfo')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800" data-tab="traininfo">列車情報</button>
-        <button onclick="switchTab('addtrain')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800" data-tab="addtrain">列車追加</button>
-        <button onclick="switchTab('consist')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800" data-tab="consist">編成表</button>
-        <button onclick="switchTab('dia')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800" data-tab="dia">ダイヤ表</button>
-        <button onclick="switchTab('settings')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800" data-tab="settings">設定</button>
+        <button onclick="switchTab('about')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition bg-indigo-600 text-white shadow whitespace-nowrap" data-tab="about">会社について</button>
+        <button onclick="switchTab('timetable')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="timetable">時刻表</button>
+        <button onclick="switchTab('operation')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="operation">走行位置</button>
+        <button onclick="switchTab('traininfo')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="traininfo">列車情報</button>
+        <button onclick="switchTab('addtrain')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="addtrain">列車追加</button>
+        <button onclick="switchTab('consist')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="consist">編成表</button>
+        <button onclick="switchTab('dia')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="dia">ダイヤ表</button>
+        <button onclick="switchTab('settings')" class="tab-btn px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap" data-tab="settings">設定</button>
     </nav>
 
     <!-- メインコンテンツ -->
-    <main class="flex-1 p-4 md:p-6 max-w-7xl mx-auto w-full relative z-10">
+    <main class="flex-1 p-3 sm:p-6 max-w-7xl mx-auto w-full relative z-10 box-border">
 
         <!-- 1. 会社について -->
         <div id="tab-about" class="tab-content active space-y-6">
-            <div class="bg-gradient-to-r from-indigo-900 to-slate-800 p-6 rounded-2xl border border-indigo-700/50 shadow-xl space-y-3">
-                <h2 class="text-2xl font-bold text-indigo-100">紫句守鉄道株式会社 <span class="text-sm font-normal text-indigo-300">Shinomori Railway Co., Ltd.</span></h2>
-                <p class="text-slate-300 text-sm leading-relaxed">
+            <div class="bg-gradient-to-r from-indigo-900 to-slate-800 p-5 sm:p-6 rounded-2xl border border-indigo-700/50 shadow-xl space-y-3">
+                <h2 class="text-xl sm:text-2xl font-bold text-indigo-100">紫句守鉄道株式会社 <span class="text-xs sm:text-sm font-normal text-indigo-300">Shinomori Railway Co., Ltd.</span></h2>
+                <p class="text-slate-300 text-xs sm:text-sm leading-relaxed">
                     紫句守鉄道（しのもり鉄道）は、紫雲本線を軸に、句守支線・紫霞観光線・星句高原線および他社直通路線を結ぶ基幹鉄道ネットワークです。
                 </p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-3">
-                    <h3 class="text-indigo-400 font-bold border-b border-slate-700 pb-2">路線一覧</h3>
-                    <ul class="text-sm text-slate-300 space-y-2 font-mono">
-                        <li><span class="text-slate-400 inline-block w-32 font-sans">紫雲本線</span> 1～30</li>
-                        <li><span class="text-slate-400 inline-block w-32 font-sans">句守支線</span> 41～55</li>
-                        <li><span class="text-slate-400 inline-block w-32 font-sans">紫霞観光線</span> 56～60</li>
-                        <li><span class="text-slate-400 inline-block w-32 font-sans">星句高原線</span> 31～40</li>
-                        <li><span class="text-slate-400 inline-block w-32 font-sans">他社直通路線</span> 09～1</li>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                <div class="bg-slate-800 p-4 sm:p-5 rounded-xl border border-slate-700 space-y-3">
+                    <h3 class="text-indigo-400 font-bold border-b border-slate-700 pb-2 text-sm sm:text-base">路線一覧</h3>
+                    <ul class="text-xs sm:text-sm text-slate-300 space-y-2 font-mono">
+                        <li><span class="text-slate-400 inline-block w-28 sm:w-32 font-sans">紫雲本線</span> 1～30</li>
+                        <li><span class="text-slate-400 inline-block w-28 sm:w-32 font-sans">句守支線</span> 41～55</li>
+                        <li><span class="text-slate-400 inline-block w-28 sm:w-32 font-sans">紫霞観光線</span> 56～60</li>
+                        <li><span class="text-slate-400 inline-block w-28 sm:w-32 font-sans">星句高原線</span> 31～40</li>
+                        <li><span class="text-slate-400 inline-block w-28 sm:w-32 font-sans">他社直通路線</span> 09～1</li>
                     </ul>
                 </div>
-                <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 space-y-3">
-                    <h3 class="text-indigo-400 font-bold border-b border-slate-700 pb-2">主要設備・車両基地</h3>
-                    <div class="text-sm text-slate-300 space-y-2">
-                        <p><strong class="text-indigo-300">副本線（4番線設置駅）:</strong><br><span class="font-mono text-xs text-slate-400">1, 3, 13, 17, 20, 24, 30, 34, 42, 45, 50, 55, 60</span></p>
-                        <p><strong class="text-indigo-300">車両基地設置駅:</strong><br><span class="font-mono text-xs text-slate-400">9, 24, 30, 33, 42</span></p>
+                <div class="bg-slate-800 p-4 sm:p-5 rounded-xl border border-slate-700 space-y-3">
+                    <h3 class="text-indigo-400 font-bold border-b border-slate-700 pb-2 text-sm sm:text-base">主要設備・車両基地</h3>
+                    <div class="text-xs sm:text-sm text-slate-300 space-y-2">
+                        <p><strong class="text-indigo-300">副本線（4番線設置駅）:</strong><br><span class="font-mono text-[11px] sm:text-xs text-slate-400">1, 3, 13, 17, 20, 24, 30, 34, 42, 45, 50, 55, 60</span></p>
+                        <p><strong class="text-indigo-300">車両基地設置駅:</strong><br><span class="font-mono text-[11px] sm:text-xs text-slate-400">9, 24, 30, 33, 42</span></p>
                     </div>
                 </div>
             </div>
@@ -241,40 +240,39 @@
 
         <!-- 2. 時刻表 -->
         <div id="tab-timetable" class="tab-content space-y-4">
-            <h2 class="text-xl font-bold text-indigo-200">全駅時刻表</h2>
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+            <h2 class="text-lg sm:text-xl font-bold text-indigo-200">全駅時刻表</h2>
+            <div class="bg-slate-800 p-3 sm:p-4 rounded-xl border border-slate-700 grid grid-cols-1 sm:grid-cols-4 gap-3 items-end">
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">駅選択</label>
-                    <select id="tt-station" onchange="renderTimetable()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-white outline-none focus:border-indigo-500"></select>
+                    <select id="tt-station" onchange="renderTimetable()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs sm:text-sm text-white outline-none focus:border-indigo-500"></select>
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">方向（上下切替）</label>
-                    <select id="tt-dir" onchange="renderTimetable()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-white outline-none focus:border-indigo-500">
+                    <select id="tt-dir" onchange="renderTimetable()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs sm:text-sm text-white outline-none focus:border-indigo-500">
                         <option value="down">下り (本線下り・各支線方面)</option>
                         <option value="up">上り (本線上り・中央方面)</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">運行日</label>
-                    <select id="tt-day" onchange="renderTimetable()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-white outline-none focus:border-indigo-500">
+                    <select id="tt-day" onchange="renderTimetable()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs sm:text-sm text-white outline-none focus:border-indigo-500">
                         <option value="weekday">平日</option>
                         <option value="holiday">土休日</option>
                     </select>
                 </div>
-                <button onclick="renderTimetable()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded text-sm font-bold transition shadow">時刻表を更新</button>
+                <button onclick="renderTimetable()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded text-xs sm:text-sm font-bold transition shadow">時刻表を更新</button>
             </div>
 
-            <!-- 時刻表本体 -->
-            <div id="timetable-container" class="bg-slate-800 rounded-xl border border-slate-700 p-5 overflow-x-auto text-sm shadow-xl">
-                <p class="text-slate-400 text-center py-4">駅を選択してください。</p>
+            <div id="timetable-container" class="bg-slate-800 rounded-xl border border-slate-700 p-4 sm:p-5 overflow-x-auto text-sm shadow-xl">
+                <p class="text-slate-400 text-center py-4 text-xs sm:text-sm">駅を選択してください。</p>
             </div>
         </div>
 
         <!-- 3. 走行位置 -->
         <div id="tab-operation" class="tab-content space-y-4">
-            <div class="flex flex-wrap justify-between items-center gap-4">
-                <h2 class="text-xl font-bold text-indigo-200">列車走行位置</h2>
-                <div class="flex items-center gap-3">
+            <div class="flex flex-wrap justify-between items-center gap-3">
+                <h2 class="text-lg sm:text-xl font-bold text-indigo-200">列車走行位置</h2>
+                <div class="flex items-center gap-2">
                     <select id="op-line-select" onchange="renderOperationTrack()" class="bg-slate-800 border border-slate-700 rounded px-3 py-1.5 text-xs text-white">
                         <option value="main">紫雲本線 (1～30)</option>
                         <option value="branch_ksh">句守支線 (41～55)</option>
@@ -285,15 +283,15 @@
                 </div>
             </div>
             
-            <div class="controls bg-slate-800 p-4 rounded-xl border border-slate-700 flex flex-wrap items-center justify-between gap-4">
-                <div class="flex items-center space-x-4">
-                    <label class="flex items-center space-x-2 text-sm text-slate-200 cursor-pointer">
+            <div class="controls bg-slate-800 p-3 sm:p-4 rounded-xl border border-slate-700 flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center space-x-3">
+                    <label class="flex items-center space-x-2 text-xs sm:text-sm text-slate-200 cursor-pointer">
                         <input type="checkbox" id="toggleView" onchange="renderOperationTrack()" class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-0">
-                        <span>四角形（詳細カード）表示に切り替え</span>
+                        <span>四角形（詳細カード）表示</span>
                     </label>
                 </div>
-                <div class="text-xs text-indigo-300">
-                    📍 中央線の上に駅名が表示され、<strong>左側：上り (▲)</strong> ／ <strong>右側：下り (▼)</strong> で一定速度走行します
+                <div class="text-[11px] sm:text-xs text-indigo-300">
+                    📍 中央線の上に駅名、<strong>左：上り</strong> ／ <strong>右：下り</strong>
                 </div>
             </div>
 
@@ -301,51 +299,51 @@
                 <div class="vertical-rail"></div>
             </div>
 
-            <div class="status-panel bg-slate-800 p-4 rounded-xl border border-slate-700 flex justify-between items-center">
-                <p class="text-sm text-slate-300"><strong>運行状態:</strong> <span id="statusText" class="text-indigo-300 font-bold">一定速度リアルタイムアニメーション中</span></p>
-                <button onclick="renderOperationTrack()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded text-xs transition font-bold">手動更新</button>
+            <div class="status-panel bg-slate-800 p-3 sm:p-4 rounded-xl border border-slate-700 flex justify-between items-center text-xs sm:text-sm">
+                <p class="text-slate-300 truncate"><strong>運行状態:</strong> <span id="statusText" class="text-indigo-300 font-bold">稼働中列車のみ表示</span></p>
+                <button onclick="renderOperationTrack()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded text-xs transition font-bold shrink-0">更新</button>
             </div>
         </div>
 
         <!-- 4. 列車情報 -->
         <div id="tab-traininfo" class="tab-content space-y-4">
-            <div class="flex flex-wrap justify-between items-center gap-4">
-                <h2 class="text-xl font-bold text-indigo-200">列車情報</h2>
+            <div class="flex flex-wrap justify-between items-center gap-3">
+                <h2 class="text-lg sm:text-xl font-bold text-indigo-200">列車情報</h2>
                 <div class="flex items-center gap-2">
-                    <button id="btn-mode-normal" onclick="setInfoViewMode('normal')" class="px-3 py-1.5 rounded text-xs font-bold bg-indigo-600 text-white">列車一覧</button>
-                    <button id="btn-mode-opnum" onclick="setInfoViewMode('opnum')" class="px-3 py-1.5 rounded text-xs font-bold bg-slate-800 text-slate-400 hover:text-white">運用番号別一覧</button>
+                    <button id="btn-mode-normal" onclick="setInfoViewMode('normal')" class="px-3 py-1.5 rounded text-xs font-bold bg-indigo-600 text-white">一覧</button>
+                    <button id="btn-mode-opnum" onclick="setInfoViewMode('opnum')" class="px-3 py-1.5 rounded text-xs font-bold bg-slate-800 text-slate-400 hover:text-white">運用別</button>
                 </div>
             </div>
 
-            <div id="info-op-bar" class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex items-center gap-4 text-xs">
-                <span class="text-slate-400 font-bold">操作モード:</span>
-                <label class="flex items-center space-x-1 cursor-pointer"><input type="radio" name="info-action-mode" value="normal" checked class="text-indigo-600"> <span>通常 (詳細表示)</span></label>
+            <div id="info-op-bar" class="bg-slate-800 p-3 rounded-xl border border-slate-700 flex flex-wrap items-center gap-3 text-xs">
+                <span class="text-slate-400 font-bold">操作:</span>
+                <label class="flex items-center space-x-1 cursor-pointer"><input type="radio" name="info-action-mode" value="normal" checked class="text-indigo-600"> <span>通常</span></label>
                 <label class="flex items-center space-x-1 cursor-pointer"><input type="radio" name="info-action-mode" value="edit" class="text-indigo-600"> <span>編集</span></label>
                 <label class="flex items-center space-x-1 cursor-pointer"><input type="radio" name="info-action-mode" value="clone" class="text-indigo-600"> <span>複製</span></label>
                 <label class="flex items-center space-x-1 cursor-pointer"><input type="radio" name="info-action-mode" value="delete" class="text-indigo-600"> <span>削除</span></label>
             </div>
 
-            <div id="train-info-content" class="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden shadow-xl"></div>
+            <div id="train-info-content" class="bg-slate-800 rounded-xl border border-slate-700 overflow-x-auto shadow-xl"></div>
         </div>
 
         <!-- 5. 列車追加 -->
         <div id="tab-addtrain" class="tab-content space-y-4">
-            <h2 id="addtrain-form-title" class="text-xl font-bold text-indigo-200">列車追加</h2>
-            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 max-w-4xl space-y-5 mx-auto">
+            <h2 id="addtrain-form-title" class="text-lg sm:text-xl font-bold text-indigo-200">列車追加</h2>
+            <div class="bg-slate-800 p-4 sm:p-6 rounded-xl border border-slate-700 max-w-4xl space-y-4 sm:space-y-5 mx-auto">
                 <input type="hidden" id="edit-target-id" value="">
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">列車番号</label>
-                        <input type="text" id="add-train-num" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-white" value="6001M">
+                        <input type="text" id="add-train-num" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs sm:text-sm text-white" value="6001M">
                     </div>
                     <div>
-                        <label class="block text-xs text-slate-400 mb-1">運用番号（記号+数字）</label>
-                        <input type="text" id="add-op-num" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-white" value="y01">
+                        <label class="block text-xs text-slate-400 mb-1">運用番号</label>
+                        <input type="text" id="add-op-num" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs sm:text-sm text-white" value="y01">
                     </div>
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">路線</label>
-                        <select id="add-line" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-white">
+                        <select id="add-line" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs sm:text-sm text-white">
                             <option value="main">紫雲本線</option>
                             <option value="branch_ksh">句守支線</option>
                             <option value="branch_skk">紫霞観光線</option>
@@ -355,10 +353,10 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">種別</label>
-                        <select id="add-train-type" onchange="updateStationSchedulePreview()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-white">
+                        <select id="add-train-type" onchange="updateStationSchedulePreview()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs sm:text-sm text-white">
                             <option value="普通" selected>普通</option>
                             <option value="準急">準急</option>
                             <option value="快速">快速</option>
@@ -370,54 +368,54 @@
                     </div>
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">編成番号</label>
-                        <input type="text" id="add-consist-num" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-white" value="S2-01 (10両)">
+                        <input type="text" id="add-consist-num" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs sm:text-sm text-white" value="S2-01 (10両)">
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">始点駅</label>
-                        <select id="add-start-station" onchange="updateStationSchedulePreview()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-white"></select>
+                        <select id="add-start-station" onchange="updateStationSchedulePreview()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs sm:text-sm text-white"></select>
                     </div>
                     <div>
                         <label class="block text-xs text-slate-400 mb-1">終点駅（行き先）</label>
-                        <select id="add-end-station" onchange="updateStationSchedulePreview()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-white"></select>
+                        <select id="add-end-station" onchange="updateStationSchedulePreview()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs sm:text-sm text-white"></select>
                     </div>
                 </div>
 
                 <div class="space-y-2">
-                    <span class="text-xs text-indigo-300 font-bold block">停車駅および到着・発車時間設定</span>
-                    <div id="station-schedule-preview" class="bg-slate-900 border border-slate-700 rounded-lg p-3 max-h-60 overflow-y-auto text-xs"></div>
+                    <span class="text-xs text-indigo-300 font-bold block">停車駅および時刻設定</span>
+                    <div id="station-schedule-preview" class="bg-slate-900 border border-slate-700 rounded-lg p-2 sm:p-3 max-h-60 overflow-y-auto text-xs"></div>
                 </div>
 
                 <div class="flex gap-3">
-                    <button onclick="saveTrainData()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-lg transition shadow text-sm">列車を保存</button>
-                    <button id="btn-cancel-edit" onclick="resetAddTrainForm()" class="hidden bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold px-5 py-2.5 rounded-lg transition text-sm">キャンセル</button>
+                    <button onclick="saveTrainData()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-lg transition shadow text-xs sm:text-sm">列車を保存</button>
+                    <button id="btn-cancel-edit" onclick="resetAddTrainForm()" class="hidden bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold px-4 py-2.5 rounded-lg transition text-xs sm:text-sm">キャンセル</button>
                 </div>
             </div>
         </div>
 
         <!-- 6. 編成表 -->
         <div id="tab-consist" class="tab-content space-y-4">
-            <h2 class="text-xl font-bold text-indigo-200">編成表（運用番号選択式）</h2>
+            <h2 class="text-lg sm:text-xl font-bold text-indigo-200">編成表</h2>
             <div id="consist-matrix-container" class="space-y-4"></div>
         </div>
 
         <!-- 7. ダイヤ表 -->
         <div id="tab-dia" class="tab-content space-y-4">
-            <h2 class="text-xl font-bold text-indigo-200">ダイヤ表</h2>
-            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 overflow-x-auto shadow-xl">
-                <div id="matrix-timetable-container" class="min-w-[800px]"></div>
+            <h2 class="text-lg sm:text-xl font-bold text-indigo-200">ダイヤ表</h2>
+            <div class="bg-slate-800 p-3 sm:p-4 rounded-xl border border-slate-700 overflow-x-auto shadow-xl">
+                <div id="matrix-timetable-container" class="min-w-[600px] sm:min-w-[800px]"></div>
             </div>
         </div>
 
         <!-- 8. 設定 -->
         <div id="tab-settings" class="tab-content space-y-4">
-            <h2 class="text-xl font-bold text-indigo-200">設定</h2>
-            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700 max-w-xl space-y-5 mx-auto">
+            <h2 class="text-lg sm:text-xl font-bold text-indigo-200">設定</h2>
+            <div class="bg-slate-800 p-5 sm:p-6 rounded-xl border border-slate-700 max-w-xl space-y-5 mx-auto">
                 <div class="space-y-3">
                     <h3 class="text-sm font-bold text-indigo-300 border-b border-slate-700 pb-1">運行日固定設定</h3>
-                    <select id="setting-fixed-day" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-sm text-white">
+                    <select id="setting-fixed-day" onchange="saveSettings()" class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs sm:text-sm text-white">
                         <option value="auto">自動（本日の曜日に準拠）</option>
                         <option value="weekday">平日ダイヤ固定</option>
                         <option value="holiday">土休日ダイヤ固定</option>
@@ -426,13 +424,13 @@
                 <div class="space-y-3">
                     <h3 class="text-sm font-bold text-indigo-300 border-b border-slate-700 pb-1">テーマモード</h3>
                     <div class="flex items-center justify-between">
-                        <span class="text-xs text-slate-300">ダークモード / ライトモード</span>
-                        <button onclick="toggleTheme()" id="theme-toggle-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded text-xs font-bold transition">ライトモードに変更</button>
+                        <span class="text-xs sm:text-sm text-slate-300">ダークモード / ライトモード</span>
+                        <button onclick="toggleTheme()" id="theme-toggle-btn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded text-xs font-bold transition">切替</button>
                     </div>
                 </div>
                 <div class="space-y-3 pt-3 border-t border-slate-700">
                     <h3 class="text-sm font-bold text-indigo-300">クラウド同期 (Firebase)</h3>
-                    <input type="text" id="fb-url" readonly class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-xs text-slate-400 cursor-not-allowed font-mono">
+                    <input type="text" id="fb-url" readonly class="w-full bg-slate-900 border border-slate-700 rounded px-3 py-2 text-[11px] text-slate-400 cursor-not-allowed font-mono">
                 </div>
             </div>
         </div>
@@ -440,10 +438,10 @@
     </main>
 
     <!-- 列車詳細ポップアップ Modal -->
-    <div id="train-detail-modal" class="fixed inset-0 modal-bg z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-800 border border-indigo-500/50 rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+    <div id="train-detail-modal" class="fixed inset-0 modal-bg z-50 flex items-center justify-center p-3 sm:p-4 hidden">
+        <div class="bg-slate-800 border border-indigo-500/50 rounded-2xl max-w-md w-full p-5 sm:p-6 space-y-4 shadow-2xl relative">
             <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white font-bold text-xl">✕</button>
-            <div id="modal-content" class="space-y-3"></div>
+            <div id="modal-content" class="space-y-3 text-xs sm:text-sm"></div>
             <button onclick="closeModal()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white py-2 rounded-lg font-bold text-xs transition">閉じる</button>
         </div>
     </div>
@@ -503,23 +501,6 @@
                     { stId: "28", arr: "08:55", dep: "08:56" },
                     { stId: "30", arr: "09:02", dep: "09:02" }
                 ]
-            },
-            {
-                id: 1002,
-                trainNum: "6002M",
-                opNum: "y02",
-                line: "main",
-                type: "普通",
-                startSt: "1",
-                endSt: "13",
-                consistNum: "S2-01 (10両)",
-                runDay: "weekday",
-                schedule: [
-                    { stId: "1", arr: "08:05", dep: "08:05" },
-                    { stId: "2", arr: "08:08", dep: "08:09" },
-                    { stId: "3", arr: "08:12", dep: "08:13" },
-                    { stId: "13", arr: "08:30", dep: "08:30" }
-                ]
             }
         ];
 
@@ -546,11 +527,11 @@
                         pushData();
                     }
                 });
-                document.getElementById('sync-status-dot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse";
+                document.getElementById('sync-status-dot').className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
                 document.getElementById('sync-status-text').innerText = "同期中";
                 document.getElementById('fb-url').value = DEFAULT_FB_URL;
             } catch(e) {
-                document.getElementById('sync-status-dot').className = "w-2.5 h-2.5 rounded-full bg-red-500";
+                document.getElementById('sync-status-dot').className = "w-2 h-2 rounded-full bg-red-500";
                 document.getElementById('sync-status-text').innerText = "オフライン";
             }
         }
@@ -576,7 +557,10 @@
                 targetBtn.classList.add('bg-indigo-600', 'text-white', 'shadow');
                 targetBtn.classList.remove('text-slate-400', 'hover:text-white', 'hover:bg-slate-800');
             }
-            if(window.innerWidth < 768) toggleMenu();
+            const menu = document.getElementById('nav-menu');
+            if(window.innerWidth < 768 && !menu.classList.contains('hidden')) {
+                toggleMenu();
+            }
 
             if (tabId === 'dia') renderMatrixTimetable();
             if (tabId === 'timetable') initTimetableDropdowns();
@@ -590,7 +574,16 @@
             }
         }
 
-        function toggleMenu() { document.getElementById('nav-menu').classList.toggle('hidden'); }
+        function toggleMenu() {
+            const menu = document.getElementById('nav-menu');
+            if (menu.classList.contains('hidden')) {
+                menu.classList.remove('hidden');
+                menu.classList.add('flex', 'flex-col', 'absolute', 'top-14', 'left-0', 'right-0', 'bg-slate-950/98', 'border-b', 'border-indigo-800', 'p-3', 'shadow-2xl', 'z-50', 'space-y-1');
+            } else {
+                menu.classList.add('hidden');
+                menu.classList.remove('flex', 'flex-col', 'absolute', 'top-14', 'left-0', 'right-0', 'bg-slate-950/98', 'border-b', 'border-indigo-800', 'p-3', 'shadow-2xl', 'z-50', 'space-y-1');
+            }
+        }
 
         function initTimetableDropdowns() {
             const stSelect = document.getElementById('tt-station');
@@ -619,10 +612,10 @@
                 }
             });
 
-            let html = `<div class="mb-4 pb-2 border-b border-slate-700 flex justify-between items-center"><span class="text-base font-bold text-indigo-300">【${stObj.id}. ${stObj.name} 駅】 発車時刻表</span></div><div class="space-y-3">`;
+            let html = `<div class="mb-3 pb-2 border-b border-slate-700 flex justify-between items-center"><span class="text-sm sm:text-base font-bold text-indigo-300">【${stObj.id}. ${stObj.name} 駅】 発車時刻表</span></div><div class="space-y-2">`;
             for(let h = 4; h <= 23; h++) {
                 const list = hourMap[h].sort((a,b) => a.min - b.min);
-                html += `<div class="flex border-b border-slate-700/60 pb-2 items-baseline"><div class="w-12 font-mono text-2xl font-bold text-indigo-400">${String(h).padStart(2, '0')}</div><div class="flex-1 flex flex-wrap items-center">`;
+                html += `<div class="flex border-b border-slate-700/60 pb-2 items-baseline"><div class="w-10 sm:w-12 font-mono text-xl sm:text-2xl font-bold text-indigo-400">${String(h).padStart(2, '0')}</div><div class="flex-1 flex flex-wrap items-center">`;
                 if(list.length === 0) html += `<span class="text-slate-600 text-xs font-mono">-</span>`;
                 else {
                     list.forEach(it => {
@@ -634,7 +627,6 @@
             container.innerHTML = html + `</div>`;
         }
 
-        /* 列車ごとの現在の状態判定ヘルパー */
         function getTrainStatus(t) {
             if(!t.schedule || t.schedule.length < 2) return "運行前";
             const schedSec = t.schedule.map(s => ({
@@ -661,7 +653,6 @@
             return "停車中";
         }
 
-        /* 一定速度アニメーション付き走行位置 */
         function renderOperationTrack() {
             const containerParent = document.getElementById('track-container-parent');
             if(!containerParent) return;
@@ -683,7 +674,6 @@
             let html = `<div class="vertical-rail" style="height: ${containerHeight - 80}px;"></div>`;
             const spacing = (containerHeight - 80) / Math.max(1, totalStations - 1);
 
-            // 駅名ラベルを中央線の真上に配置
             stations.forEach((st, idx) => {
                 const topPos = 40 + (idx * spacing);
                 html += `
@@ -710,31 +700,27 @@
                 const firstDep = schedSec[0].dep || schedSec[0].arr;
                 const lastArr = schedSec[schedSec.length - 1].arr || schedSec[schedSec.length - 1].dep;
 
+                if(nowSec < firstDep || nowSec > lastArr + 30) return;
+
                 let currentPosRatio = -1;
                 let currentStationIdx = -1;
                 let status = getTrainStatus(t);
 
-                if(nowSec >= firstDep && nowSec <= lastArr) {
-                    for(let i = 0; i < schedSec.length - 1; i++) {
-                        const cur = schedSec[i];
-                        const next = schedSec[i+1];
-                        if(nowSec >= cur.arr && nowSec <= cur.dep) {
-                            currentStationIdx = stations.findIndex(s => s.id === cur.stId);
-                            break;
-                        } else if(nowSec > cur.dep && nowSec < next.arr) {
-                            const idxA = stations.findIndex(s => s.id === cur.stId);
-                            const idxB = stations.findIndex(s => s.id === next.stId);
-                            if(idxA !== -1 && idxB !== -1) {
-                                const prog = (nowSec - cur.dep) / (next.arr - cur.dep);
-                                currentPosRatio = idxA + (idxB - idxA) * prog;
-                            }
-                            break;
+                for(let i = 0; i < schedSec.length - 1; i++) {
+                    const cur = schedSec[i];
+                    const next = schedSec[i+1];
+                    if(nowSec >= cur.arr && nowSec <= cur.dep) {
+                        currentStationIdx = stations.findIndex(s => s.id === cur.stId);
+                        break;
+                    } else if(nowSec > cur.dep && nowSec < next.arr) {
+                        const idxA = stations.findIndex(s => s.id === cur.stId);
+                        const idxB = stations.findIndex(s => s.id === next.stId);
+                        if(idxA !== -1 && idxB !== -1) {
+                            const prog = (nowSec - cur.dep) / (next.arr - cur.dep);
+                            currentPosRatio = idxA + (idxB - idxA) * prog;
                         }
+                        break;
                     }
-                } else if(nowSec < firstDep) {
-                    currentStationIdx = stations.findIndex(s => s.id === schedSec[0].stId);
-                } else {
-                    currentStationIdx = stations.findIndex(s => s.id === schedSec[schedSec.length - 1].stId);
                 }
 
                 let topPos = -1;
@@ -752,7 +738,7 @@
                             <div onclick="showTrainDetail(${t.id})" class="v-train ${isUp ? 'up-train' : 'down-train'}" style="top: ${topPos}px;">
                                 ${isUp ? `<div class="train-num-label text-indigo-300">${t.trainNum} ${arrow}</div>` : ''}
                                 <div class="train-card-v ${badgeClass}">
-                                    <div class="font-bold text-xs">${t.type} ${destName}行</div>
+                                    <div class="font-bold text-[11px]">${t.type} ${destName}行</div>
                                     <div class="text-[9px] opacity-90">${t.opNum} | ${status}</div>
                                 </div>
                                 ${!isUp ? `<div class="train-num-label text-indigo-300">${arrow} ${t.trainNum}</div>` : ''}
@@ -797,9 +783,9 @@
                     if(!opGroup[op]) opGroup[op] = [];
                     opGroup[op].push(t);
                 });
-                let html = `<div class="p-4 space-y-4">`;
+                let html = `<div class="p-3 sm:p-4 space-y-3">`;
                 Object.keys(opGroup).sort().forEach(op => {
-                    html += `<div class="bg-slate-900 border border-slate-700 p-4 rounded-xl flex items-center gap-4"><div class="text-2xl font-mono font-bold text-indigo-300 w-24 text-center bg-indigo-950 p-2 rounded-lg border border-indigo-800">${op}</div><div class="flex-1 flex flex-wrap gap-2">`;
+                    html += `<div class="bg-slate-900 border border-slate-700 p-3 sm:p-4 rounded-xl flex flex-col sm:flex-row items-start sm:items-center gap-3"><div class="text-xl font-mono font-bold text-indigo-300 w-20 text-center bg-indigo-950 p-2 rounded-lg border border-indigo-800">${op}</div><div class="flex-1 flex flex-wrap gap-2">`;
                     opGroup[op].forEach(t => {
                         html += `<div onclick="showTrainDetail(${t.id})" class="bg-slate-800 border border-slate-700 p-2 rounded-lg text-xs cursor-pointer hover:border-indigo-500"><div class="font-mono text-indigo-400 font-bold">${t.trainNum}</div><div>${t.type}</div></div>`;
                     });
@@ -807,8 +793,7 @@
                 });
                 container.innerHTML = html + `</div>`;
             } else {
-                // 右端列を「状態」に変更
-                let html = `<table class="w-full text-left text-xs"><thead class="bg-slate-900 text-indigo-200 border-b border-slate-700"><tr><th class="p-3">列車番号</th><th class="p-3">運用</th><th class="p-3">種別</th><th class="p-3">行き先</th><th class="p-3">編成</th><th class="p-3">状態</th></tr></thead><tbody class="divide-y divide-slate-700 text-slate-300">`;
+                let html = `<div class="overflow-x-auto"><table class="w-full text-left text-xs whitespace-nowrap"><thead class="bg-slate-900 text-indigo-200 border-b border-slate-700"><tr><th class="p-3">列車番号</th><th class="p-3">運用</th><th class="p-3">種別</th><th class="p-3">行き先</th><th class="p-3">編成</th><th class="p-3">状態</th></tr></thead><tbody class="divide-y divide-slate-700 text-slate-300">`;
                 trains.forEach(t => {
                     const dest = allStationsMaster.find(s => s.id === t.endSt)?.name || t.endSt;
                     const st = getTrainStatus(t);
@@ -819,7 +804,7 @@
 
                     html += `<tr class="hover:bg-slate-750 cursor-pointer" onclick="handleTrainRowClick(${t.id})"><td class="p-3 font-bold text-indigo-300 font-mono">${t.trainNum}</td><td class="p-3 font-mono text-indigo-400">${t.opNum}</td><td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${typeColorMap[t.type] || ''}">${t.type}</span></td><td class="p-3 font-bold text-slate-200">${dest}行</td><td class="p-3 font-mono text-slate-400">${t.consistNum || '-'}</td><td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${stBadge}">${st}</span></td></tr>`;
                 });
-                container.innerHTML = html + `</tbody></table>`;
+                container.innerHTML = html + `</tbody></table></div>`;
             }
         }
 
@@ -898,7 +883,7 @@
             while(true) {
                 const st = allStationsMaster[curr];
                 const ex = existingSched?.find(s => s.stId === st.id);
-                html += `<tr><td class="p-2 font-bold text-slate-200">${st.id}. ${st.name}</td><td class="p-2"><input type="text" data-stid="${st.id}" class="sched-arr bg-slate-950 border border-slate-700 rounded px-2 py-1 w-20 text-xs font-mono text-white" value="${ex ? ex.arr : (curr === sIdx ? '-' : '08:10')}"></td><td class="p-2"><input type="text" data-stid="${st.id}" class="sched-dep bg-slate-950 border border-slate-700 rounded px-2 py-1 w-20 text-xs font-mono text-white" value="${ex ? ex.dep : (curr === eIdx ? '-' : '08:11')}"></td></tr>`;
+                html += `<tr><td class="p-2 font-bold text-slate-200">${st.id}. ${st.name}</td><td class="p-2"><input type="text" data-stid="${st.id}" class="sched-arr bg-slate-950 border border-slate-700 rounded px-1.5 py-1 w-16 sm:w-20 text-xs font-mono text-white" value="${ex ? ex.arr : (curr === sIdx ? '-' : '08:10')}"></td><td class="p-2"><input type="text" data-stid="${st.id}" class="sched-dep bg-slate-950 border border-slate-700 rounded px-1.5 py-1 w-16 sm:w-20 text-xs font-mono text-white" value="${ex ? ex.dep : (curr === eIdx ? '-' : '08:11')}"></td></tr>`;
                 if(curr === eIdx) break;
                 curr += step;
                 count++;
@@ -936,26 +921,22 @@
             switchTab('traininfo');
         }
 
-        /* 運用番号をプルダウン選択できるように修正した編成表 */
         function renderConsistMatrix() {
             const container = document.getElementById('consist-matrix-container');
             if(!container) return;
-
-            // 登録されている全列車の運用番号リストを抽出（重複なし・ソート済）
             const opList = Array.from(new Set((appData.trains || []).map(t => t.opNum).filter(Boolean))).sort();
 
             container.innerHTML = fullConsistsMaster.map(group => `
                 <div class="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
                     <h3 class="font-bold text-indigo-300 text-sm border-b border-slate-700 pb-2">${group.series}</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                         ${group.items.map(item => {
                             const currentAssigned = appData.consistAssignments[item.text] || "";
-                            let optionsHtml = `<option value="">-- 未選択 (予備) --</option>`;
+                            let optionsHtml = `<option value="">-- 未選択 --</option>`;
                             opList.forEach(op => {
                                 const selected = (currentAssigned === op) ? "selected" : "";
                                 optionsHtml += `<option value="${op}" ${selected}>${op}</option>`;
                             });
-
                             return `
                                 <div class="bg-slate-900 p-2.5 rounded border border-slate-700 flex justify-between items-center gap-2">
                                     <span class="font-mono text-slate-200 font-bold">${item.text}</span>
@@ -976,12 +957,12 @@
             const trains = appData.trains || [];
             if(trains.length === 0) { container.innerHTML = `<p class="text-slate-500 text-center py-8">データなし</p>`; return; }
 
-            let html = `<table class="w-full border-collapse text-xs text-center"><thead><tr class="bg-slate-900 text-indigo-200 border-b border-slate-700"><th class="py-2 px-3 border-r border-slate-700 text-left sticky left-0 bg-slate-900 z-10 w-36">駅名</th>`;
-            trains.forEach(t => { html += `<th class="py-2 px-2 border-r border-slate-700 min-w-[75px]"><div class="font-bold text-indigo-300 font-mono">${t.trainNum}</div><div class="text-[9px] px-1 rounded ${typeColorMap[t.type] || ''}">${t.type}</div></th>`; });
+            let html = `<table class="w-full border-collapse text-xs text-center"><thead><tr class="bg-slate-900 text-indigo-200 border-b border-slate-700"><th class="py-2 px-3 border-r border-slate-700 text-left sticky left-0 bg-slate-900 z-10 w-32 sm:w-36">駅名</th>`;
+            trains.forEach(t => { html += `<th class="py-2 px-2 border-r border-slate-700 min-w-[70px]"><div class="font-bold text-indigo-300 font-mono text-xs">${t.trainNum}</div><div class="text-[9px] px-1 rounded ${typeColorMap[t.type] || ''}">${t.type}</div></th>`; });
             html += `</tr></thead><tbody class="divide-y divide-slate-800 text-slate-300">`;
 
             allStationsMaster.forEach(st => {
-                html += `<tr><td class="py-1.5 px-3 border-r border-slate-700 text-left font-medium sticky left-0 bg-slate-800 z-10 w-36">${st.id}. ${st.name}</td>`;
+                html += `<tr><td class="py-1.5 px-3 border-r border-slate-700 text-left font-medium sticky left-0 bg-slate-800 z-10 w-32 sm:w-36 text-xs">${st.id}. ${st.name}</td>`;
                 trains.forEach(t => {
                     const sched = t.schedule?.find(s => s.stId === st.id);
                     html += `<td class="py-1.5 px-2 border-r border-slate-800 font-mono text-[11px]">${sched ? (sched.dep !== '-' ? sched.dep : sched.arr) : '｜'}</td>`;
@@ -1000,9 +981,9 @@
             const startName = allStationsMaster.find(s => s.id === t.startSt)?.name || t.startSt;
             const endName = allStationsMaster.find(s => s.id === t.endSt)?.name || t.endSt;
             document.getElementById('modal-content').innerHTML = `
-                <div class="border-b border-slate-700 pb-2"><div class="text-xs text-indigo-400 font-mono">列車: ${t.trainNum} / 運用: ${t.opNum}</div><div class="text-lg font-bold text-white mt-1">${t.type} ${endName}行</div></div>
-                <div class="text-xs text-slate-300"><p><strong>区間:</strong> ${startName} ➔ ${endName}</p><p><strong>編成:</strong> ${t.consistNum || '-'}</p><p><strong>状態:</strong> ${getTrainStatus(t)}</p></div>
-                <div class="max-h-48 overflow-y-auto bg-slate-900 p-3 rounded-lg border border-slate-700 space-y-1">
+                <div class="border-b border-slate-700 pb-2"><div class="text-xs text-indigo-400 font-mono">列車: ${t.trainNum} / 運用: ${t.opNum}</div><div class="text-base sm:text-lg font-bold text-white mt-1">${t.type} ${endName}行</div></div>
+                <div class="text-xs text-slate-300 space-y-1"><p><strong>区間:</strong> ${startName} ➔ ${endName}</p><p><strong>編成:</strong> ${t.consistNum || '-'}</p><p><strong>状態:</strong> ${getTrainStatus(t)}</p></div>
+                <div class="max-h-48 overflow-y-auto bg-slate-900 p-2.5 rounded-lg border border-slate-700 space-y-1">
                     ${t.schedule?.map(s => `<div class="flex justify-between text-xs"><span class="text-slate-300">${allStationsMaster.find(st=>st.id===s.stId)?.name || s.stId}</span><span class="font-mono text-indigo-300">着 ${s.arr} / 発 ${s.dep}</span></div>`).join('') || ''}
                 </div>`;
             modal.classList.remove('hidden');
@@ -1011,14 +992,15 @@
         function updateClock() {
             const now = new Date();
             const days = ['日','月','火','水','木','金','土'];
-            document.getElementById('live-datetime').innerText = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}(${days[now.getDay()]}) ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+            const el = document.getElementById('live-datetime');
+            if(el) el.innerText = `${now.getFullYear()}/${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')}(${days[now.getDay()]}) ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
         }
 
         window.onload = function() {
             initFirebase();
             setInterval(updateClock, 1000);
             updateClock();
-            setInterval(renderOperationTrack, 100); // リアルタイム連続アニメーション
+            setInterval(renderOperationTrack, 100);
         };
     </script>
 </body>
